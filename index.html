@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeri Kenangan IPS 3 | Album Digital</title>
+    
+    <!-- Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Crimson+Text:wght@400;600&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ================= VARIABLES ================= */
+        :root {
+            /* Light Theme */
+            --coklat: #7D6E5C;
+            --coklat-muda: #9C8A75;
+            --beige: #E8DFCA;
+            --krem: #F5F1E8;
+            --gold: #C19A6B;
+            --soft-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Dark Theme */
+            --dark-bg: #1A1A1A;
+            --dark-card: #2D2D2D;
+            --dark-text: #E0E0E0;
+            --dark-border: #404040;
+            --dark-gold: #D4AF37;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Crimson Text', 'Georgia', serif;
+            background-color: var(--krem);
+            color: #5a4a3a;
+            line-height: 1.6;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        body.dark-mode {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
+        }
+
+        /* ================= TIMELINE VERTIKAL ================= */
+        .timeline-container {
+            position: fixed;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .timeline-line {
+            width: 2px;
+            height: 400px;
+            background: linear-gradient(to bottom, 
+                transparent, 
+                var(--gold), 
+                var(--gold), 
+                transparent);
+            position: absolute;
+            left: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .timeline-item {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--krem);
+            border: 2px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--coklat);
+            z-index: 2;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-item:hover {
+            transform: scale(1.2);
+            background-color: var(--gold);
+            color: white;
+        }
+
+        .timeline-item.active {
+            background-color: var(--gold);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .timeline-item::after {
+            content: attr(data-year);
+            position: absolute;
+            left: 60px;
+            white-space: nowrap;
+            background-color: var(--coklat);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
+        .timeline-item:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        body.dark-mode .timeline-item {
+            background-color: var(--dark-card);
+            border-color: var(--dark-gold);
+            color: var(--dark-text);
+        }
+
+        body.dark-mode .timeline-line {
+            background: linear-gradient(to bottom, 
+                transparent, 
+                var(--dark-gold), 
+                var(--dark-gold), 
+                transparent);
+        }
+
+        /* ================= CONTROLS ================= */
+        .controls-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(125, 110, 92, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .control-btn:hover {
+            background: var(--gold);
+            color: var(--krem);
+            transform: rotate(15deg);
+        }
+
+        body.dark-mode .control-btn {
+            background: rgba(45, 45, 45, 0.5);
+            border-color: var(--dark-gold);
+            color: var(--dark-gold);
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(125, 110, 92, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(193, 154, 107, 0.3);
+            transition: var(--transition);
+        }
+
+        body.dark-mode .navbar {
+            background-color: rgba(45, 45, 45, 0.98);
+            border-bottom-color: var(--dark-border);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: var(--beige);
+            text-decoration: none;
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            padding: 0.5rem 1.5rem;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .nav-menu a:hover {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+        }
+
+        .nav-menu a.active {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+        }
+
+        body.dark-mode .nav-menu a {
+            color: var(--dark-text);
+        }
+
+        /* ================= HERO SECTION ================= */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(135deg, #7D6E5C 0%, #5C5042 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--beige);
+            padding: 0 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-mode .hero {
+            background: linear-gradient(135deg, #2D2D2D 0%, #1A1A1A 100%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(193, 154, 107, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(232, 223, 202, 0.08) 0%, transparent 40%);
+        }
+
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            margin-bottom: 3rem;
+            opacity: 0.95;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .cta-btn {
+            padding: 1rem 2.2rem;
+            background-color: transparent;
+            color: var(--beige);
+            border: 1px solid var(--beige);
+            border-radius: 2px;
+            font-family: 'Crimson Text', serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .cta-btn:hover {
+            background-color: var(--beige);
+            color: var(--coklat);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* ================= YEAR SECTIONS ================= */
+        .year-section {
+            padding: 6rem 2rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .year-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .year-section:nth-child(even) {
+            background-color: rgba(232, 223, 202, 0.15);
+            border-radius: 20px;
+            margin: 3rem auto;
+            padding: 6rem 2rem 4rem;
+        }
+
+        body.dark-mode .year-section:nth-child(even) {
+            background-color: rgba(45, 45, 45, 0.3);
+        }
+
+        .year-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .year-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--coklat);
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        body.dark-mode .year-header h2 {
+            color: var(--dark-gold);
+        }
+
+        .year-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .year-header p {
+            font-size: 1.2rem;
+            color: #7a6a56;
+            max-width: 700px;
+            margin: 2rem auto 0;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        body.dark-mode .year-header p {
+            color: #B0B0B0;
+        }
+
+        /* ================= GALLERY WITH CAPTIONS ================= */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .photo-item {
+            border-radius: 2px;
+            overflow: hidden;
+            box-shadow: var(--soft-shadow);
+            transition: var(--transition);
+            height: 350px;
+            position: relative;
+            background-color: white;
+            opacity: 0;
+            transform: scale(0.95);
+            animation: fadeInUp 0.6s ease forwards;
+            cursor: pointer;
+        }
+
+        body.dark-mode .photo-item {
+            background-color: var(--dark-card);
+            border: 1px solid var(--dark-border);
+        }
+
+        .photo-item::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px solid rgba(193, 154, 107, 0.3);
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .photo-item:hover::before {
+            opacity: 1;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: transform 1s ease;
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .photo-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .photo-caption {
+            padding: 1rem;
+            background-color: white;
+            text-align: center;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.dark-mode .photo-caption {
+            background-color: var(--dark-card);
+        }
+
+        .photo-caption h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--coklat);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        body.dark-mode .photo-caption h3 {
+            color: var(--dark-text);
+        }
+
+        /* ================= LIGHTBOX CUSTOM STYLES ================= */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .lightbox-overlay.active .lightbox-content {
+            transform: scale(1);
+        }
+
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border: 10px solid white;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .lightbox-caption {
+            position: absolute;
+            bottom: -60px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            padding: 1rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .lightbox-close:hover {
+            color: var(--gold);
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-nav:hover {
+            background: var(--gold);
+        }
+
+        .lightbox-prev {
+            left: 20px;
+        }
+
+        .lightbox-next {
+            right: 20px;
+        }
+
+        /* ================= FOOTER ================= */
+        footer {
+            background-color: var(--coklat);
+            color: var(--krem);
+            text-align: center;
+            padding: 3rem 2rem;
+            font-size: 1rem;
+            letter-spacing: 1.5px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode footer {
+            background-color: #2D2D2D;
+            border-top-color: var(--dark-border);
+        }
+
+        .download-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .download-btn {
+            background-color: var(--gold);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 2px;
+            font-family: 'Crimson Text', serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .download-btn:hover {
+            background-color: var(--coklat-muda);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ================= ANIMATIONS ================= */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .photo-item:nth-child(1) { animation-delay: 0.1s; }
+        .photo-item:nth-child(2) { animation-delay: 0.2s; }
+        .photo-item:nth-child(3) { animation-delay: 0.3s; }
+        .photo-item:nth-child(4) { animation-delay: 0.4s; }
+        .photo-item:nth-child(5) { animation-delay: 0.5s; }
+        .photo-item:nth-child(6) { animation-delay: 0.6s; }
+        .photo-item:nth-child(7) { animation-delay: 0.7s; }
+        .photo-item:nth-child(8) { animation-delay: 0.8s; }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 1200px) {
+            .timeline-container {
+                left: 20px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .timeline-container {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.8rem 1rem;
+            }
+            
+            .nav-menu {
+                gap: 0.5rem;
+            }
+            
+            .nav-menu a {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.8rem;
+            }
+            
+            .controls-container {
+                top: 10px;
+                right: 10px;
+            }
+            
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .hero {
+                padding: 0 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            
+            .year-section {
+                padding: 4rem 1rem 3rem;
+            }
+            
+            .year-section:nth-child(even) {
+                padding: 4rem 1rem 3rem;
+                margin: 2rem auto;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- TIMELINE VERTIKAL -->
+    <div class="timeline-container">
+        <div class="timeline-line"></div>
+        <div class="timeline-item active" data-year="2022" onclick="scrollToYear('tahun-2022')">22</div>
+        <div class="timeline-item" data-year="2023" onclick="scrollToYear('tahun-2023')">23</div>
+        <div class="timeline-item" data-year="2024" onclick="scrollToYear('tahun-2024')">24</div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls-container">
+        <button class="control-btn" id="themeToggle" title="Mode Malam">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button class="control-btn" id="musicToggle" title="Musik Latar">
+            <i class="fas fa-music"></i>
+        </button>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <ul class="nav-menu">
+            <li><a href="#home" class="active">Beranda</a></li>
+            <li><a href="#tahun-2022">2022</a></li>
+            <li><a href="#tahun-2023">2023</a></li>
+            <li><a href="#tahun-2024">2024</a></li>
+        </ul>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>GALERI KENANGAN IPS 3</h1>
+            <p>"Setiap Lembar Cerita, Sebuah Kenangan Abadi"</p>
+            <div class="cta-buttons">
+                <button class="cta-btn" onclick="scrollToYear('tahun-2022')">
+                    <i class="fas fa-book-open"></i> Buka Album 2022
+                </button>
+                <button class="cta-btn" onclick="scrollToYear('tahun-2023')">
+                    <i class="fas fa-heart"></i> Kenangan 2023
+                </button>
+                <button class="cta-btn" onclick="scrollToYear('tahun-2024')">
+                    <i class="fas fa-star"></i> Momen 2024
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 2022 ================= -->
+    <section id="tahun-2022" class="year-section">
+        <div class="year-header">
+            <h2>Kenangan 2022</h2>
+            <p>Awal petualangan kami di kelas IPS 3, mengenal satu sama lain dengan tawa dan cerita pertama</p>
+        </div>
+        
+        <div class="gallery-grid">
+            <!-- Foto 2022 -->
+            <div class="photo-item" onclick="openLightbox('2022-1')">
+                <img src="images/2022/diko.jpeg" alt="Hari Pertama Sekolah">
+                <div class="photo-caption">
+                    <h3>Hari Pertama di Kelas</h3>
+                </div>
+            </div>
+            
+            <div class="photo-item" onclick="openLightbox('2022-2')">
+                <img src="images/2023/buk.jpeg" alt="Buk Kartika Ultah">
+                <div class="photo-caption">
+                    <h3>Buk Kartika Ultah</h3>
+                </div>
+            </div>
+            
+            <div class="photo-item" onclick="openLightbox('2022-3')">
+                <img src="images/2023/WhatsApp Image 2025-12-23 at 10.11.48.jpeg" alt="Berenang">
+                <div class="photo-caption">
+                    <h3>Berenang</h3>
+                </div>
+            </div>
+            
+            <div class="photo-item" onclick="openLightbox('2022-4')">
+                <img src="images/2023/WhatsApp Image 2025-12-23 at 10.15.24.jpeg" alt="Upacara Pertama">
+                <div class="photo-caption">
+                    <h3>Upacara Pertama</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 2023 ================= -->
+    <section id="tahun-2023" class="year-section">
+        <div class="year-header">
+            <h2>Kenangan 2023</h2>
+            <p>Tahun penuh petualangan, persahabatan yang menguat, dan pencapaian bersama</p>
+        </div>
+        
+        <div class="gallery-grid">
+            <!-- Foto 2023 -->
+            <div class="photo-item" onclick="openLightbox('2023-1')">
+                <img src="images/2023/WhatsApp Image 2025-12-23 at 10.11.45.jpeg" alt="Study Tour">
+                <div class="photo-caption">
+                    <h3>Akhi Ukhti</h3>
+                </div>
+            </div>
+            
+            <div class="photo-item" onclick="openLightbox('2023-2')">
+                <img src="images/2023/kelas.jpeg" alt="Lomba 17 Agustus">
+                <div class="photo-caption">
+                    <h3>Selesai UAS</h3>
+                </div>
+            </div>
+            
+            <div class="photo-item" onclick="openLightbox('2023-3')">
+                <img src="images/2023/puasa.jpeg" alt="Presentasi Kelas">
+                <div class="photo-caption">
+                    <h3>Bukber Dirumah Pais</h3>
+                </div>
+            </div>
+            
+            <div class="photo-item" onclick="openLightbox('2023-4')">
+                <img src="images/2024/foto5.jpg" alt="Acara Sekolah">
+                <div class="photo-caption">
+                    <h3>Bukber terakhir Bareng</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= 2024 ================= -->
+    <section id="tahun-2024" class="year-section">
+        <div class="year-header">
+            <h2>Kenangan 2024</h2>
+            <p>Masa terakhir bersama, penuh kenangan manis dan persiapan melanjutkan perjalanan</p>
+        </div>
+        
+        <div class="gallery-grid">
+            <!-- Foto 2024 -->
+            <div class="photo-item" onclick="openLightbox('2024-1')">
+                <img src="images/2024/alkena.jpeg" alt="Pesta Kelulusan">
+                <div class="photo-caption">
+                    <h3>Persiapan Kelulusan</h3>
+                </div>
+            </div>
+            
+            <div class="photo-item" onclick="openLightbox('2024-2')">
+                <img src="images/2024/pak kodri.jpeg" alt="Foto Bersama">
+                <div class="photo-caption">
+                    <h3>Olahraga With Pak Kodri</h3>
+                </div>
+            </div>
+            
+            <div class="photo-item" onclick="openLightbox('2024-3')">
+                <img src="images/2024/pepis.jpeg" alt="Proyek Akhir">
+                <div class="photo-caption">
+                    <h3>Detik-Detik Akhir </h3>
+                </div>
+            </div>
+            
+            <div class="photo-item" onclick="openLightbox('2024-4')">
+                <img src="images/2024/perpisahan.jpg" alt="Perpisahan">
+                <div class="photo-caption">
+                    <h3>Momen Perpisahan</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox-overlay" id="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()">×</button>
+        <button class="lightbox-nav lightbox-prev" onclick="prevImage()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="lightbox-content">
+            <img class="lightbox-image" id="lightbox-img" src="" alt="">
+            <div class="lightbox-caption" id="lightbox-caption"></div>
+        </div>
+        <button class="lightbox-nav lightbox-next" onclick="nextImage()">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>© 2024 Album Kenangan Kelas IPS 3 | Setiap Momen Adalah Harta Berharga</p>
+        <div class="download-section">
+            <p>Ingin menyimpan kenangan ini?</p>
+            <button class="download-btn" onclick="downloadAlbum()">
+                <i class="fas fa-download"></i> Unduh Album PDF
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        // ================= DATA GALLERY =================
+        const galleryData = {
+            '2022': [
+                { id: '2022-1', src: 'images/2022/diko.jpeg', caption: 'Hari pertama masuk kelas IPS 3 - 15 Juli 2022' },
+                { id: '2022-2', src: 'images/2023/buk.jpeg', caption: 'Buk Kartika Ultah' },
+                { id: '2022-3', src: 'images/2023/WhatsApp Image 2025-12-23 at 10.11.48.jpeg', caption: 'Berenang + bonceng crush' },
+                { id: '2022-4', src: 'images/2023/WhatsApp Image 2025-12-23 at 10.15.24.jpeg', caption: 'Upacara bendera hari Senin yang pertama' }
+            ],
+            '2023': [
+                { id: '2023-1', src: 'images/2023/WhatsApp Image 2025-12-23 at 10.11.45.jpeg', caption: 'Isan Jadi Akhi ' },
+                { id: '2023-2', src: 'images/2023/kelas.jpeg', caption: 'UAS terakhir' },
+                { id: '2023-3', src: 'images/2023/puasa.jpeg', caption: 'bukber pat pais' },
+                { id: '2023-4', src: 'images/2024/foto5.jpg', caption: 'bukber lagi tapi ini last' }
+            ],
+            '2024': [
+                { id: '2024-1', src: 'images/2024/alkena.jpeg', caption: 'Alkena Di beyond' },
+                { id: '2024-2', src: 'images/2024/pak kodri.jpeg', caption: 'lari lapangan uin with pak kodri' },
+                { id: '2024-3', src: 'images/2024/pepis.jpeg', caption: 'foto sebelum beneran lulus' },
+                { id: '2024-4', src: 'images/2024/IMG-20240508-WA0276.jpg', caption: 'Momen perpisahan dengan guru dan teman-teman' }
+            ]
+        };
+
+        // ================= LIGHTBOX SYSTEM =================
+        let currentImageIndex = 0;
+        let currentYear = '2022';
+        let lightboxOpen = false;
+
+        function openLightbox(imageId) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxCaption = document.getElementById('lightbox-caption');
+            
+            // Find image data
+            let found = false;
+            for (const year in galleryData) {
+                const index = galleryData[year].findIndex(img => img.id === imageId);
+                if (index !== -1) {
+                    currentYear = year;
+                    currentImageIndex = index;
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (found) {
+                const imageData = galleryData[currentYear][currentImageIndex];
+                lightboxImg.src = imageData.src;
+                lightboxCaption.textContent = imageData.caption;
+                lightbox.classList.add('active');
+                lightboxOpen = true;
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            lightboxOpen = false;
+            document.body.style.overflow = 'auto';
+        }
+
+        function prevImage() {
+            currentImageIndex--;
+            if (currentImageIndex < 0) {
+                // Move to previous year
+                const years = Object.keys(galleryData);
+                const currentYearIndex = years.indexOf(currentYear);
+                if (currentYearIndex > 0) {
+                    currentYear = years[currentYearIndex - 1];
+                    currentImageIndex = galleryData[currentYear].length - 1;
+                } else {
+                    currentImageIndex = 0;
+                }
+            }
+            
+            const imageData = galleryData[currentYear][currentImageIndex];
+            document.getElementById('lightbox-img').src = imageData.src;
+            document.getElementById('lightbox-caption').textContent = imageData.caption;
+        }
+
+        function nextImage() {
+            currentImageIndex++;
+            if (currentImageIndex >= galleryData[currentYear].length) {
+                // Move to next year
+                const years = Object.keys(galleryData);
+                const currentYearIndex = years.indexOf(currentYear);
+                if (currentYearIndex < years.length - 1) {
+                    currentYear = years[currentYearIndex + 1];
+                    currentImageIndex = 0;
+                } else {
+                    currentImageIndex = galleryData[currentYear].length - 1;
+                }
+            }
+            
+            const imageData = galleryData[currentYear][currentImageIndex];
+            document.getElementById('lightbox-img').src = imageData.src;
+            document.getElementById('lightbox-caption').textContent = imageData.caption;
+        }
+
+        // Close lightbox with ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightboxOpen) {
+                closeLightbox();
+            } else if (e.key === 'ArrowLeft' && lightboxOpen) {
+                prevImage();
+            } else if (e.key === 'ArrowRight' && lightboxOpen) {
+                nextImage();
+            }
+        });
+
+        // ================= DARK MODE =================
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                body.classList.add('dark-mode');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                themeToggle.title = 'Mode Terang';
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                themeToggle.title = 'Mode Malam';
+            }
+        });
+
+        // ================= MUSIC PLAYER =================
+        const musicToggle = document.getElementById('musicToggle');
+        const bgMusic = new Audio('music/backsound.mp3');
+        bgMusic.loop = true;
+        bgMusic.volume = 0.3;
+        let isPlaying = false;
+
+        musicToggle.addEventListener('click', () => {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicToggle.innerHTML = '<i class="fas fa-music"></i>';
+                musicToggle.title = 'Putar Musik';
+            } else {
+                bgMusic.play().catch(e => {
+                    console.log('Autoplay diblokir, klik lagi untuk memutar');
+                });
+                musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
+                musicToggle.title = 'Hentikan Musik';
+            }
+            isPlaying = !isPlaying;
+        });
+
+        // ================= TIMELINE =================
+        function updateTimeline() {
+            const sections = document.querySelectorAll('.year-section');
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const scrollPosition = window.scrollY + 100;
+            
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    currentSection = section.id;
+                }
+            });
+            
+            timelineItems.forEach(item => {
+                item.classList.remove('active');
+                const year = item.getAttribute('data-year');
+                if (currentSection === `tahun-${year}`) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        // ================= SCROLL ANIMATIONS =================
+        function checkScroll() {
+            const sections = document.querySelectorAll('.year-section');
+            const windowHeight = window.innerHeight;
+            
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                
+                if (sectionTop < windowHeight * 0.85) {
+                    section.classList.add('visible');
+                }
+            });
+            
+            updateTimeline();
+        }
+
+        // ================= NAVIGATION =================
+        function scrollToYear(yearId) {
+            const element = document.getElementById(yearId);
+            if (element) {
+                window.scrollTo({
+                    top: element.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+                
+                // Update navigation
+                document.querySelectorAll('.nav-menu a').forEach(link => {
+                    link.classList.remove('active');
+                });
+                document.querySelector(`.nav-menu a[href="#${yearId}"]`).classList.add('active');
+            }
+        }
+
+        // ================= DOWNLOAD ALBUM (PDF) =================
+        async function downloadAlbum() {
+            const downloadBtn = document.querySelector('.download-btn');
+            const originalText = downloadBtn.innerHTML;
+            
+            downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Membuat PDF...';
+            downloadBtn.disabled = true;
+            
+            try {
+                // In real implementation, you would use jsPDF and html2canvas
+                // For demo purposes, we'll create a simple alert
+                alert('Fitur download PDF sedang dalam pengembangan.\n\nUntuk versi demo, Anda bisa:\n1. Screenshot halaman ini\n2. Save halaman web (Ctrl+S)\n3. Hubungi admin untuk versi PDF lengkap');
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('Terjadi kesalahan saat membuat PDF. Coba lagi nanti.');
+            } finally {
+                downloadBtn.innerHTML = originalText;
+                downloadBtn.disabled = false;
+            }
+        }
+
+        // ================= INITIALIZATION =================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize theme
+            initTheme();
+            
+            // Initial scroll check
+            checkScroll();
+            
+            // Event listeners
+            window.addEventListener('scroll', checkScroll);
+            
+            // Navigation clicks
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    
+                    document.querySelectorAll('.nav-menu a').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    
+                    scrollToYear(targetId);
+                });
+            });
+            
+            // Close lightbox when clicking overlay
+            document.getElementById('lightbox').addEventListener('click', (e) => {
+                if (e.target.classList.contains('lightbox-overlay')) {
+                    closeLightbox();
+                }
+            });
+            
+            console.log('Galeri Kenangan IPS 3 siap digunakan!');
+        });
+    </script>
+</body>
+</html>
