@@ -2,510 +2,614 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galeri Kenangan IPS 3 | Album Digital</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Memory Album IPS 3 | Digital Archive</title>
     
-    <!-- Libraries -->
+    <!-- Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Crimson+Text:wght@400;600&family=EB+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* ================= VARIABLES ================= */
+
+        /* Efek blinking untuk tombol play */
+.player-btn.blink {
+    animation: blinkEffect 0.8s ease infinite alternate;
+    box-shadow: 0 0 0 2px var(--accent-gold);
+}
+
+@keyframes blinkEffect {
+    from {
+        transform: scale(1);
+        box-shadow: 0 0 0 2px var(--accent-gold);
+    }
+    to {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 4px var(--accent-gold),
+                    0 0 20px var(--accent-gold);
+    }
+}
+
+/* Pastikan music player selalu terlihat */
+.music-player.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Tambah tooltip */
+.player-btn {
+    position: relative;
+}
+
+.player-btn::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.player-btn:hover::after {
+    opacity: 1;
+}
+        /* ========== CSS RESET & VARIABLES ========== */
         :root {
-            /* Light Theme */
-            --coklat: #7D6E5C;
-            --coklat-muda: #9C8A75;
-            --beige: #E8DFCA;
-            --krem: #F5F1E8;
-            --gold: #C19A6B;
-            --soft-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Color Palette - Premium Magazine */
+            --primary-dark: #2C1810;
+            --primary-light: #8B7355;
+            --accent-gold: #D4AF37;
+            --accent-sand: #E8DCCC;
+            --neutral-white: #FAF7F2;
+            --neutral-black: #1A1A1A;
             
-            /* Dark Theme */
-            --dark-bg: #1A1A1A;
-            --dark-card: #2D2D2D;
-            --dark-text: #E0E0E0;
-            --dark-border: #404040;
-            --dark-gold: #D4AF37;
+            /* Transitions */
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            
+            /* Shadows */
+            --shadow-subtle: 0 2px 20px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --shadow-strong: 0 20px 50px rgba(0, 0, 0, 0.15);
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 2rem;
+            --space-lg: 3rem;
+            --space-xl: 5rem;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
         }
 
         html {
             scroll-behavior: smooth;
+            font-size: 16px;
         }
 
         body {
-            font-family: 'Crimson Text', 'Georgia', serif;
-            background-color: var(--krem);
-            color: #5a4a3a;
+            font-family: 'Crimson Text', serif;
+            background-color: var(--neutral-white);
+            color: var(--primary-dark);
             line-height: 1.6;
-            transition: background-color 0.5s ease, color 0.5s ease;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        body.dark-mode {
-            background-color: var(--dark-bg);
-            color: var(--dark-text);
+        /* ========== TYPOGRAPHY - PREMIUM STYLING ========== */
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
         }
 
-        /* ================= TIMELINE VERTIKAL ================= */
-        .timeline-container {
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            position: relative;
+            display: inline-block;
+            margin-bottom: var(--space-lg);
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-gold), transparent);
+        }
+
+        h3 {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            margin-bottom: var(--space-sm);
+        }
+
+        p {
+            font-size: clamp(1rem, 3vw, 1.1rem);
+            line-height: 1.7;
+            margin-bottom: var(--space-md);
+        }
+
+        .text-lead {
+            font-size: clamp(1.2rem, 4vw, 1.4rem);
+            font-weight: 400;
+            font-style: italic;
+            color: var(--primary-light);
+            line-height: 1.8;
+        }
+
+        .text-caption {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--primary-light);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* ========== NAVIGATION - MINIMALIST ========== */
+        .nav-container {
             position: fixed;
-            left: 40px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 100;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: var(--space-sm);
+            background: rgba(250, 247, 242, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(139, 115, 85, 0.1);
+            transition: all 0.4s var(--transition-smooth);
+        }
+
+        .nav-container.scrolled {
+            padding: var(--space-xs) var(--space-sm);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-decoration: none;
+            letter-spacing: 0.1em;
+        }
+
+        .logo span {
+            color: var(--accent-gold);
+        }
+
+        .nav-years {
+            display: flex;
+            gap: var(--space-sm);
+            list-style: none;
+        }
+
+        .year-link {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.9rem;
+            color: var(--primary-light);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            transition: all 0.3s var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .year-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.6s var(--transition-smooth);
+        }
+
+        .year-link:hover::before {
+            left: 100%;
+        }
+
+        .year-link:hover,
+        .year-link.active {
+            color: var(--primary-dark);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        /* ========== HERO SECTION - DENGAN BACKGROUND FOTO ========== */
+        /* ========== HERO SECTION - DENGAN BACKGROUND FOTO TERANG ========== */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: calc(var(--space-xl) * 2) var(--space-md) var(--space-xl);
+    position: relative;
+    overflow: hidden;
+    background: 
+        /* Overlay SANGAT transparan - kurangi opacity */
+        linear-gradient(rgba(44, 24, 16, 0.4), rgba(44, 24, 16, 0.6)),
+        /* Background foto */
+        url('images/2023/buk.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+/* Overlay yang lebih terang */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Gradient yang lebih terang */
+    background: linear-gradient(
+        to bottom,
+        rgba(44, 24, 16, 0.3),  /* Dari 0.7 jadi 0.3 */
+        rgba(44, 24, 16, 0.5)   /* Dari 0.85 jadi 0.5 */
+    );
+    z-index: 1;
+}
+
+.hero-content {
+    max-width: 800px;
+    text-align: center;
+    position: relative;
+    z-index: 3;
+    color: var(--neutral-white);
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4); /* Shadow lebih tebal */
+}
+
+/* Tambah blur sedikit di background */
+.hero-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(0px); /* Optional: tambah blur halus */
+    z-index: 1;
+}
+
+        .hero-title {
+            margin-bottom: var(--space-md);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s var(--transition-smooth) 0.3s forwards;
+        }
+
+        .hero-subtitle {
+            margin-bottom: var(--space-lg);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s var(--transition-smooth) 0.6s forwards;
+        }
+
+        .hero-cta {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s var(--transition-smooth) 0.9s forwards;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: var(--space-lg);
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 60px;
+            gap: 0.5rem;
+            opacity: 0;
+            animation: fadeIn 1s var(--transition-smooth) 1.5s forwards;
+            z-index: 3;
         }
 
-        .timeline-line {
-            width: 2px;
-            height: 400px;
-            background: linear-gradient(to bottom, 
-                transparent, 
-                var(--gold), 
-                var(--gold), 
-                transparent);
+        .scroll-indicator span {
+            font-size: 0.8rem;
+            color: var(--accent-sand);
+            letter-spacing: 0.1em;
+        }
+
+        .scroll-indicator i {
+            color: var(--accent-gold);
+            animation: bounce 2s infinite var(--transition-bounce);
+        }
+
+        /* Responsive untuk background */
+        @media (max-width: 768px) {
+            .hero-section {
+                background-attachment: scroll;
+                background-size: cover;
+                background-position: center 30%;
+            }
+        }
+
+        /* ========== MASONRY GALLERY LAYOUT ========== */
+        .memory-section {
+            padding: var(--space-xl) var(--space-md);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            margin-bottom: var(--space-xl);
+            text-align: center;
+        }
+
+        .masonry-grid {
+            columns: 1;
+            column-gap: var(--space-md);
+            padding: 0 var(--space-sm);
+        }
+
+        .memory-item {
+            break-inside: avoid;
+            margin-bottom: var(--space-md);
+            opacity: 0;
+            transform: translateY(30px);
+            animation-fill-mode: forwards;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .memory-item.animated {
+            animation: fadeInUp 0.6s var(--transition-smooth) forwards;
+        }
+
+        .memory-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 4px;
+            transition: all 0.4s var(--transition-smooth);
+            position: relative;
+            z-index: 1;
+            background: #f0f0f0;
+        }
+
+        .memory-item::before {
+            content: '';
             position: absolute;
-            left: 24px;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            transition: all 0.4s var(--transition-smooth);
+            pointer-events: none;
+            z-index: 2;
         }
 
-        .timeline-item {
-            width: 50px;
-            height: 50px;
+        .memory-item:hover::before {
+            border-color: var(--accent-gold);
+            transform: scale(1.02);
+        }
+
+        .memory-item:hover .memory-image {
+            transform: scale(1.01);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .memory-caption {
+            padding: var(--space-sm) 0;
+            font-style: italic;
+            color: var(--primary-light);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            border-bottom: 1px solid rgba(139, 115, 85, 0.1);
+        }
+
+        /* Double Tap Heart Overlay */
+        .heart-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 5rem;
+            pointer-events: none;
+            z-index: 3;
+            transition: transform 0.3s var(--transition-bounce);
+        }
+
+        .heart-overlay.active {
+            transform: translate(-50%, -50%) scale(1);
+            animation: heartPulse 0.6s var(--transition-bounce) forwards;
+        }
+
+        @keyframes heartPulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* ========== FLOATING MUSIC PLAYER ========== */
+        .music-player {
+            position: fixed;
+            bottom: var(--space-md);
+            right: var(--space-md);
+            z-index: 999;
+            background: rgba(250, 247, 242, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            padding: 0.75rem 1.5rem;
+            box-shadow: var(--shadow-medium);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.5s var(--transition-smooth);
+        }
+
+        .music-player.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .player-btn {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background-color: var(--krem);
-            border: 2px solid var(--gold);
+            background: var(--neutral-white);
+            border: 1px solid var(--accent-sand);
+            color: var(--primary-light);
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
             position: relative;
-            transition: var(--transition);
-            font-family: 'Playfair Display', serif;
-            font-weight: 600;
-            font-size: 1.2rem;
-            color: var(--coklat);
-            z-index: 2;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
 
-        .timeline-item:hover {
-            transform: scale(1.2);
-            background-color: var(--gold);
-            color: white;
+        .player-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            transition: left 0.6s var(--transition-smooth);
         }
 
-        .timeline-item.active {
-            background-color: var(--gold);
-            color: white;
+        .player-btn:hover::before {
+            left: 100%;
+        }
+
+        .player-btn:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
             transform: scale(1.1);
         }
 
-        .timeline-item::after {
-            content: attr(data-year);
-            position: absolute;
-            left: 60px;
-            white-space: nowrap;
-            background-color: var(--coklat);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            opacity: 0;
-            transform: translateX(-10px);
-            transition: var(--transition);
-            pointer-events: none;
-        }
-
-        .timeline-item:hover::after {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        body.dark-mode .timeline-item {
-            background-color: var(--dark-card);
-            border-color: var(--dark-gold);
-            color: var(--dark-text);
-        }
-
-        body.dark-mode .timeline-line {
-            background: linear-gradient(to bottom, 
-                transparent, 
-                var(--dark-gold), 
-                var(--dark-gold), 
-                transparent);
-        }
-
-        /* ================= CONTROLS ================= */
-        .controls-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1001;
-            display: flex;
-            gap: 10px;
-        }
-
-        .control-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(125, 110, 92, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            transition: var(--transition);
-        }
-
-        .control-btn:hover {
-            background: var(--gold);
-            color: var(--krem);
-            transform: rotate(15deg);
-        }
-
-        body.dark-mode .control-btn {
-            background: rgba(45, 45, 45, 0.5);
-            border-color: var(--dark-gold);
-            color: var(--dark-gold);
-        }
-
-        /* ================= NAVBAR ================= */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background-color: rgba(125, 110, 92, 0.98);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-bottom: 1px solid rgba(193, 154, 107, 0.3);
-            transition: var(--transition);
-        }
-
-        body.dark-mode .navbar {
-            background-color: rgba(45, 45, 45, 0.98);
-            border-bottom-color: var(--dark-border);
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-menu a {
-            color: var(--beige);
-            text-decoration: none;
-            font-family: 'Playfair Display', serif;
-            font-weight: 500;
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-            padding: 0.5rem 1.5rem;
-            border-bottom: 2px solid transparent;
-            transition: var(--transition);
-        }
-
-        .nav-menu a:hover {
-            color: var(--gold);
-            border-bottom-color: var(--gold);
-        }
-
-        .nav-menu a.active {
-            color: var(--gold);
-            border-bottom-color: var(--gold);
-        }
-
-        body.dark-mode .nav-menu a {
-            color: var(--dark-text);
-        }
-
-        /* ================= HERO SECTION ================= */
-        .hero {
-            height: 100vh;
-            background: linear-gradient(135deg, #7D6E5C 0%, #5C5042 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: var(--beige);
-            padding: 0 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        body.dark-mode .hero {
-            background: linear-gradient(135deg, #2D2D2D 0%, #1A1A1A 100%);
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(193, 154, 107, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 80% 20%, rgba(232, 223, 202, 0.08) 0%, transparent 40%);
-        }
-
-        .hero-content {
-            max-width: 800px;
-            z-index: 2;
-            position: relative;
-        }
-
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .hero p {
-            font-size: 1.4rem;
-            margin-bottom: 3rem;
-            opacity: 0.95;
-            font-style: italic;
-            letter-spacing: 1px;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .cta-btn {
-            padding: 1rem 2.2rem;
-            background-color: transparent;
-            color: var(--beige);
-            border: 1px solid var(--beige);
-            border-radius: 2px;
-            font-family: 'Crimson Text', serif;
-            font-size: 1.1rem;
-            font-weight: 500;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .cta-btn:hover {
-            background-color: var(--beige);
-            color: var(--coklat);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        /* ================= YEAR SECTIONS ================= */
-        .year-section {
-            padding: 6rem 2rem 4rem;
-            max-width: 1400px;
-            margin: 0 auto;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-
-        .year-section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .year-section:nth-child(even) {
-            background-color: rgba(232, 223, 202, 0.15);
-            border-radius: 20px;
-            margin: 3rem auto;
-            padding: 6rem 2rem 4rem;
-        }
-
-        body.dark-mode .year-section:nth-child(even) {
-            background-color: rgba(45, 45, 45, 0.3);
-        }
-
-        .year-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .year-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            color: var(--coklat);
-            margin-bottom: 1.5rem;
-            position: relative;
-            display: inline-block;
-            font-weight: 600;
-        }
-
-        body.dark-mode .year-header h2 {
-            color: var(--dark-gold);
-        }
-
-        .year-header h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
-        }
-
-        .year-header p {
-            font-size: 1.2rem;
-            color: #7a6a56;
-            max-width: 700px;
-            margin: 2rem auto 0;
-            line-height: 1.8;
-            font-style: italic;
-        }
-
-        body.dark-mode .year-header p {
-            color: #B0B0B0;
-        }
-
-        /* ================= GALLERY WITH CAPTIONS ================= */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .photo-item {
-            border-radius: 2px;
-            overflow: hidden;
-            box-shadow: var(--soft-shadow);
-            transition: var(--transition);
-            height: 350px;
-            position: relative;
-            background-color: white;
-            opacity: 0;
+        .player-btn:active {
             transform: scale(0.95);
-            animation: fadeInUp 0.6s ease forwards;
-            cursor: pointer;
         }
 
-        body.dark-mode .photo-item {
-            background-color: var(--dark-card);
-            border: 1px solid var(--dark-border);
+        .player-btn.play-active {
+            background: var(--accent-gold);
+            color: var(--neutral-white);
+            border-color: var(--accent-gold);
         }
 
-        .photo-item::before {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            border: 1px solid rgba(193, 154, 107, 0.3);
-            z-index: 1;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .photo-item:hover::before {
-            opacity: 1;
-        }
-
-        .photo-item img {
-            width: 100%;
-            height: 280px;
-            object-fit: cover;
-            transition: transform 1s ease;
-        }
-
-        .photo-item:hover img {
-            transform: scale(1.05);
-        }
-
-        .photo-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .photo-caption {
-            padding: 1rem;
-            background-color: white;
-            text-align: center;
-            height: 70px;
+        /* Music Visualizer */
+        .visualizer {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items: flex-end;
+            gap: 3px;
+            height: 30px;
+            padding: 0 0.5rem;
+            border-left: 1px solid rgba(139, 115, 85, 0.2);
         }
 
-        body.dark-mode .photo-caption {
-            background-color: var(--dark-card);
+        .bar {
+            width: 3px;
+            background: var(--accent-gold);
+            border-radius: 1px;
+            transition: height 0.2s var(--transition-smooth);
+            animation: barPulse 0.6s infinite alternate;
         }
 
-        .photo-caption h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            color: var(--coklat);
-            font-weight: 600;
-            margin: 0;
+        .bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+        .bar:nth-child(2) { height: 15px; animation-delay: 0.1s; }
+        .bar:nth-child(3) { height: 22px; animation-delay: 0.2s; }
+        .bar:nth-child(4) { height: 18px; animation-delay: 0.3s; }
+        .bar:nth-child(5) { height: 12px; animation-delay: 0.4s; }
+
+        @keyframes barPulse {
+            from { height: 5px; }
+            to { height: 25px; }
         }
 
-        body.dark-mode .photo-caption h3 {
-            color: var(--dark-text);
-        }
-
-        /* ================= LIGHTBOX CUSTOM STYLES ================= */
-        .lightbox-overlay {
+        /* ========== PREMIUM LIGHTBOX ========== */
+        .lightbox {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             z-index: 2000;
             display: none;
             justify-content: center;
             align-items: center;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s var(--transition-smooth);
         }
 
-        .lightbox-overlay.active {
+        .lightbox.active {
             display: flex;
             opacity: 1;
+            animation: lightboxFadeIn 0.4s var(--transition-smooth);
         }
 
         .lightbox-content {
-            max-width: 90%;
-            max-height: 90%;
             position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
             transform: scale(0.9);
-            transition: transform 0.3s ease;
+            transition: transform 0.4s var(--transition-smooth);
         }
 
-        .lightbox-overlay.active .lightbox-content {
+        .lightbox.active .lightbox-content {
             transform: scale(1);
         }
 
@@ -513,36 +617,48 @@
             max-width: 100%;
             max-height: 80vh;
             object-fit: contain;
-            border: 10px solid white;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            display: block;
+            border-radius: 4px;
+            box-shadow: 0 25px 100px rgba(0, 0, 0, 0.5);
         }
 
         .lightbox-caption {
             position: absolute;
-            bottom: -60px;
+            bottom: -3rem;
             left: 0;
             right: 0;
             text-align: center;
-            color: white;
-            font-size: 1.2rem;
-            padding: 1rem;
-            font-family: 'Playfair Display', serif;
+            color: var(--neutral-white);
+            font-family: 'Crimson Text', serif;
+            font-size: 1.1rem;
+            font-style: italic;
+            padding: var(--space-sm);
+            opacity: 0.9;
         }
 
         .lightbox-close {
             position: absolute;
-            top: -50px;
+            top: -3rem;
             right: 0;
-            background: none;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
-            color: white;
-            font-size: 2rem;
+            color: var(--neutral-white);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
             cursor: pointer;
-            transition: var(--transition);
+            font-size: 1.5rem;
+            transition: all 0.3s var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .lightbox-close:hover {
-            color: var(--gold);
+            background: var(--accent-gold);
+            transform: rotate(90deg);
         }
 
         .lightbox-nav {
@@ -551,79 +667,66 @@
             transform: translateY(-50%);
             background: rgba(255, 255, 255, 0.1);
             border: none;
-            color: white;
+            color: var(--neutral-white);
             width: 50px;
             height: 50px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 1.5rem;
-            transition: var(--transition);
+            font-size: 1.2rem;
+            transition: all 0.3s var(--transition-smooth);
             display: flex;
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0.8;
         }
 
         .lightbox-nav:hover {
-            background: var(--gold);
+            background: var(--accent-gold);
+            opacity: 1;
+            transform: translateY(-50%) scale(1.1);
         }
 
         .lightbox-prev {
-            left: 20px;
+            left: -60px;
         }
 
         .lightbox-next {
-            right: 20px;
+            right: -60px;
         }
 
-        /* ================= FOOTER ================= */
-        footer {
-            background-color: var(--coklat);
-            color: var(--krem);
-            text-align: center;
-            padding: 3rem 2rem;
-            font-size: 1rem;
-            letter-spacing: 1.5px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        /* ========== SPECIAL 2024 SECTION - CONFETTI ========== */
+        .year-2024 {
+            position: relative;
+            overflow: hidden;
         }
 
-        body.dark-mode footer {
-            background-color: #2D2D2D;
-            border-top-color: var(--dark-border);
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-gold);
+            opacity: 0;
+            pointer-events: none;
         }
 
-        .download-section {
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 8px white;
+            opacity: 0;
+            pointer-events: none;
         }
 
-        .download-btn {
-            background-color: var(--gold);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 2px;
-            font-family: 'Crimson Text', serif;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin-top: 1rem;
-        }
-
-        .download-btn:hover {
-            background-color: var(--coklat-muda);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        /* ================= ANIMATIONS ================= */
+        /* ========== ANIMATIONS ========== */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -631,563 +734,1055 @@
             }
         }
 
-        .photo-item:nth-child(1) { animation-delay: 0.1s; }
-        .photo-item:nth-child(2) { animation-delay: 0.2s; }
-        .photo-item:nth-child(3) { animation-delay: 0.3s; }
-        .photo-item:nth-child(4) { animation-delay: 0.4s; }
-        .photo-item:nth-child(5) { animation-delay: 0.5s; }
-        .photo-item:nth-child(6) { animation-delay: 0.6s; }
-        .photo-item:nth-child(7) { animation-delay: 0.7s; }
-        .photo-item:nth-child(8) { animation-delay: 0.8s; }
-
-        /* ================= RESPONSIVE ================= */
-        @media (max-width: 1200px) {
-            .timeline-container {
-                left: 20px;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
             }
         }
 
-        @media (max-width: 992px) {
-            .timeline-container {
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes lightboxFadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ========== RESPONSIVE DESIGN ========== */
+        @media (min-width: 768px) {
+            .masonry-grid {
+                columns: 2;
+                column-gap: var(--space-lg);
+            }
+            
+            .memory-item {
+                margin-bottom: var(--space-lg);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .masonry-grid {
+                columns: 3;
+            }
+            
+            .memory-section {
+                padding: var(--space-xl) var(--space-lg);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .nav-years {
                 display: none;
             }
             
-            .hero h1 {
-                font-size: 2.8rem;
+            .music-player {
+                bottom: var(--space-sm);
+                right: var(--space-sm);
+                padding: 0.5rem 1rem;
             }
             
-            .gallery-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            .lightbox-prev {
+                left: 10px;
+            }
+            
+            .lightbox-next {
+                right: 10px;
             }
         }
 
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 0.8rem 1rem;
-            }
-            
-            .nav-menu {
-                gap: 0.5rem;
-            }
-            
-            .nav-menu a {
-                font-size: 0.9rem;
-                padding: 0.4rem 0.8rem;
-            }
-            
-            .controls-container {
-                top: 10px;
-                right: 10px;
-            }
-            
-            .control-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 1rem;
-            }
-            
-            .hero {
-                padding: 0 1rem;
-            }
-            
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .cta-btn {
-                width: 100%;
-                max-width: 300px;
-                justify-content: center;
-            }
-            
-            .year-section {
-                padding: 4rem 1rem 3rem;
-            }
-            
-            .year-section:nth-child(even) {
-                padding: 4rem 1rem 3rem;
-                margin: 2rem auto;
-            }
-            
-            .gallery-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
+        /* ========== FOOTER ========== */
+        .footer-section {
+            padding: var(--space-xl) var(--space-md);
+            text-align: center;
+            background: var(--primary-dark);
+            color: var(--neutral-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-title {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            margin-bottom: var(--space-md);
+            color: var(--accent-sand);
+        }
+
+        .footer-text {
+            color: rgba(250, 247, 242, 0.7);
+            margin-bottom: var(--space-lg);
+        }
+
+        .footer-signature {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--accent-gold);
+            margin-top: var(--space-xl);
+            padding-top: var(--space-md);
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
 </head>
 <body>
-    <!-- TIMELINE VERTIKAL -->
-    <div class="timeline-container">
-        <div class="timeline-line"></div>
-        <div class="timeline-item active" data-year="2022" onclick="scrollToYear('tahun-2022')">22</div>
-        <div class="timeline-item" data-year="2023" onclick="scrollToYear('tahun-2023')">23</div>
-        <div class="timeline-item" data-year="2024" onclick="scrollToYear('tahun-2024')">24</div>
-    </div>
-
-    <!-- CONTROLS -->
-    <div class="controls-container">
-        <button class="control-btn" id="themeToggle" title="Mode Malam">
-            <i class="fas fa-moon"></i>
-        </button>
-        <button class="control-btn" id="musicToggle" title="Musik Latar">
-            <i class="fas fa-music"></i>
-        </button>
-    </div>
-
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <ul class="nav-menu">
-            <li><a href="#home" class="active">Beranda</a></li>
-            <li><a href="#tahun-2022">2022</a></li>
-            <li><a href="#tahun-2023">2023</a></li>
-            <li><a href="#tahun-2024">2024</a></li>
-        </ul>
+    <!-- NAVIGATION -->
+    <nav class="nav-container" id="navbar">
+        <div class="nav-content">
+            <a href="#home" class="logo">MEMORY<span>ALBUM</span></a>
+            <ul class="nav-years">
+                <li><a href="#year-2022" class="year-link active">2022</a></li>
+                <li><a href="#year-2023" class="year-link">2023</a></li>
+                <li><a href="#year-2024" class="year-link">2024</a></li>
+            </ul>
+        </div>
     </nav>
 
     <!-- HERO SECTION -->
-    <section id="home" class="hero">
+    <section id="home" class="hero-section">
+        <div class="hero-bg-pattern"></div>
         <div class="hero-content">
-            <h1>GALERI KENANGAN IPS 3</h1>
-            <p>"Setiap Lembar Cerita, Sebuah Kenangan Abadi"</p>
-            <div class="cta-buttons">
-                <button class="cta-btn" onclick="scrollToYear('tahun-2022')">
-                    <i class="fas fa-book-open"></i> Buka Album 2022
-                </button>
-                <button class="cta-btn" onclick="scrollToYear('tahun-2023')">
-                    <i class="fas fa-heart"></i> Kenangan 2023
-                </button>
-                <button class="cta-btn" onclick="scrollToYear('tahun-2024')">
-                    <i class="fas fa-star"></i> Momen 2024
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= 2022 ================= -->
-    <section id="tahun-2022" class="year-section">
-        <div class="year-header">
-            <h2>Kenangan 2022</h2>
-            <p>Awal petualangan kami di kelas IPS 3, mengenal satu sama lain dengan tawa dan cerita pertama</p>
-        </div>
-        
-        <div class="gallery-grid">
-            <!-- Foto 2022 -->
-            <div class="photo-item" onclick="openLightbox('2022-1')">
-                <img src="images/2022/diko.jpeg" alt="Hari Pertama Sekolah">
-                <div class="photo-caption">
-                    <h3>Hari Pertama di Kelas</h3>
-                </div>
-            </div>
-            
-            <div class="photo-item" onclick="openLightbox('2022-2')">
-                <img src="images/2023/buk.jpeg" alt="Buk Kartika Ultah">
-                <div class="photo-caption">
-                    <h3>Buk Kartika Ultah</h3>
-                </div>
-            </div>
-            
-            <div class="photo-item" onclick="openLightbox('2022-3')">
-                <img src="images/2023/WhatsApp Image 2025-12-23 at 10.11.48.jpeg" alt="Berenang">
-                <div class="photo-caption">
-                    <h3>Berenang</h3>
-                </div>
-            </div>
-            
-            <div class="photo-item" onclick="openLightbox('2022-4')">
-                <img src="images/2023/WhatsApp Image 2025-12-23 at 10.15.24.jpeg" alt="Upacara Pertama">
-                <div class="photo-caption">
-                    <h3>Upacara Pertama</h3>
+            <h1 class="hero-title">IPS 3 Memory Archive</h1>
+            <p class="text-lead hero-subtitle">Sebuah perjalanan visual melalui kenangan, tawa, dan momen yang tak terlupakan. Setiap foto adalah cerita, setiap cerita adalah kenangan abadi.</p>
+            <div class="hero-cta">
+                <div class="scroll-indicator">
+                    <span>Scroll to Explore</span>
+                    <i class="fas fa-chevron-down"></i>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ================= 2023 ================= -->
-    <section id="tahun-2023" class="year-section">
-        <div class="year-header">
-            <h2>Kenangan 2023</h2>
-            <p>Tahun penuh petualangan, persahabatan yang menguat, dan pencapaian bersama</p>
+    <!-- 2022 SECTION -->
+    <section id="year-2022" class="memory-section">
+        <div class="section-header">
+            <h2>The Beginning · 2022</h2>
+            <p class="text-lead">Awal petualangan, pertemuan pertama, dan cerita yang baru dimulai. Kenangan sederhana yang menjadi fondasi persahabatan.</p>
         </div>
         
-        <div class="gallery-grid">
-            <!-- Foto 2023 -->
-            <div class="photo-item" onclick="openLightbox('2023-1')">
-                <img src="images/2023/WhatsApp Image 2025-12-23 at 10.11.45.jpeg" alt="Study Tour">
-                <div class="photo-caption">
-                    <h3>Akhi Ukhti</h3>
-                </div>
+        <div class="masonry-grid" id="gallery-2022">
+            <!-- Photo 1 -->
+            <div class="memory-item" data-id="2022-1">
+                <img src="images/2022/diko.jpeg" alt="Hari pertama di kelas IPS 3" class="memory-image" loading="lazy">
+                <div class="memory-caption">Hari pertama - antusiasme dan harapan baru</div>
+                <div class="heart-overlay"><i class="fas fa-heart"></i></div>
             </div>
             
-            <div class="photo-item" onclick="openLightbox('2023-2')">
-                <img src="images/2023/kelas.jpeg" alt="Lomba 17 Agustus">
-                <div class="photo-caption">
-                    <h3>Selesai UAS</h3>
-                </div>
+            <!-- Photo 2 -->
+            <div class="memory-item" data-id="2022-2">
+                <img src="images/2023/buk.jpeg" alt="Buk Kartika Ulang Tahun" class="memory-image" loading="lazy">
+                <div class="memory-caption">Perayaan sederhana, kebahagiaan yang besar</div>
+                <div class="heart-overlay"><i class="fas fa-heart"></i></div>
             </div>
             
-            <div class="photo-item" onclick="openLightbox('2023-3')">
-                <img src="images/2023/puasa.jpeg" alt="Presentasi Kelas">
-                <div class="photo-caption">
-                    <h3>Bukber Dirumah Pais</h3>
-                </div>
+            <!-- Photo 3 -->
+            <div class="memory-item" data-id="2022-3">
+                <img src="images/2023/WhatsApp Image 2025-12-23 at 10.11.48.jpeg" alt="Berenang bersama" class="memory-image" loading="lazy">
+                <div class="memory-caption">Momen santai di luar kelas, tawa yang tak terlupakan</div>
+                <div class="heart-overlay"><i class="fas fa-heart"></i></div>
             </div>
             
-            <div class="photo-item" onclick="openLightbox('2023-4')">
-                <img src="images/2024/foto5.jpg" alt="Acara Sekolah">
-                <div class="photo-caption">
-                    <h3>Bukber terakhir Bareng</h3>
-                </div>
+            <!-- Photo 4 -->
+            <div class="memory-item" data-id="2022-4">
+                <img src="images/2023/WhatsApp Image 2025-12-23 at 10.15.24.jpeg" alt="Upacara pertama" class="memory-image" loading="lazy">
+                <div class="memory-caption">Semangat baru di minggu pertama sekolah</div>
+                <div class="heart-overlay"><i class="fas fa-heart"></i></div>
             </div>
         </div>
     </section>
 
-    <!-- ================= 2024 ================= -->
-    <section id="tahun-2024" class="year-section">
-        <div class="year-header">
-            <h2>Kenangan 2024</h2>
-            <p>Masa terakhir bersama, penuh kenangan manis dan persiapan melanjutkan perjalanan</p>
+    <!-- 2023 SECTION -->
+    <section id="year-2023" class="memory-section">
+        <div class="section-header">
+            <h2>The Journey · 2023</h2>
+            <p class="text-lead">Tahun pertumbuhan, pengalaman baru, dan ikatan yang semakin kuat. Setiap momen membentuk karakter dan kenangan bersama.</p>
         </div>
         
-        <div class="gallery-grid">
-            <!-- Foto 2024 -->
-            <div class="photo-item" onclick="openLightbox('2024-1')">
-                <img src="images/2024/alkena.jpeg" alt="Pesta Kelulusan">
-                <div class="photo-caption">
-                    <h3>Persiapan Kelulusan</h3>
-                </div>
+        <div class="masonry-grid" id="gallery-2023">
+            <!-- Photo 1 -->
+            <div class="memory-item" data-id="2023-1">
+                <img src="images/2023/WhatsApp Image 2025-12-23 at 10.11.45.jpeg" alt="Study Tour" class="memory-image" loading="lazy">
+                <div class="memory-caption">Petualangan belajar di luar ruang kelas</div>
+                <div class="heart-overlay"><i class="fas fa-heart"></i></div>
             </div>
             
-            <div class="photo-item" onclick="openLightbox('2024-2')">
-                <img src="images/2024/pak kodri.jpeg" alt="Foto Bersama">
-                <div class="photo-caption">
-                    <h3>Olahraga With Pak Kodri</h3>
-                </div>
+            <!-- Photo 2 -->
+            <div class="memory-item" data-id="2023-2">
+                <img src="images/2023/kelas.jpeg" alt="UAS terakhir" class="memory-image" loading="lazy">
+                <div class="memory-caption">Setelah UAS - perasaan lega dan pencapaian</div>
+                <div class="heart-overlay"><i class="fas fa-heart"></i></div>
             </div>
             
-            <div class="photo-item" onclick="openLightbox('2024-3')">
-                <img src="images/2024/pepis.jpeg" alt="Proyek Akhir">
-                <div class="photo-caption">
-                    <h3>Detik-Detik Akhir </h3>
-                </div>
+            <!-- Photo 3 -->
+            <div class="memory-item" data-id="2023-3">
+                <img src="images/2023/puasa.jpeg" alt="Bukber di rumah teman" class="memory-image" loading="lazy">
+                <div class="memory-caption">Kebersamaan di bulan suci, silaturahmi yang hangat</div>
+                <div class="heart-overlay"><i class="fas fa-heart"></i></div>
             </div>
             
-            <div class="photo-item" onclick="openLightbox('2024-4')">
-                <img src="images/2024/perpisahan.jpg" alt="Perpisahan">
-                <div class="photo-caption">
-                    <h3>Momen Perpisahan</h3>
-                </div>
+            <!-- Photo 4 -->
+            <div class="memory-item" data-id="2023-4">
+                <img src="images/2024/foto5.jpg" alt="Bukber terakhir" class="memory-image" loading="lazy">
+                <div class="memory-caption">Makan bersama terakhir sebelum berpisah</div>
+                <div class="heart-overlay"><i class="fas fa-heart"></i></div>
             </div>
         </div>
     </section>
+
+    <!-- 2024 SECTION -->
+    <section id="year-2024" class="memory-section year-2024">
+        <div class="section-header">
+            <h2>The Finale · 2024</h2>
+            <p class="text-lead">Bab penutup yang penuh makna, persiapan untuk melanjutkan perjalanan masing-masing. Kenangan manis sebagai bekal masa depan.</p>
+        </div>
+        
+        <div class="masonry-grid" id="gallery-2024">
+            <!-- Photo 1 -->
+            <div class="memory-item" data-id="2024-1">
+                <img src="images/2024/alkena.jpeg" alt="Persiapan kelulusan" class="memory-image" loading="lazy">
+                <div class="memory-caption">Detik-detik menuju kelulusan, harapan dan cita-cita</div>
+                <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+            </div>
+            
+            <!-- Photo 2 -->
+            <div class="memory-item" data-id="2024-2">
+                <img src="images/2024/pak kodri.jpeg" alt="Olahraga dengan Pak Kodri" class="memory-image" loading="lazy">
+                <div class="memory-caption">Semangat dan kesehatan, pelajaran di luar buku</div>
+                <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+            </div>
+            
+            <!-- Photo 3 -->
+            <div class="memory-item" data-id="2024-3">
+                <img src="images/2024/pepis.jpeg" alt="Detik-detik akhir" class="memory-image" loading="lazy">
+                <div class="memory-caption">Momen terakhir bersama sebagai satu kelas</div>
+                <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+            </div>
+            
+            <!-- Photo 4 -->
+            <div class="memory-item" data-id="2024-4">
+                <img src="images/2024/perpisahan.jpg" alt="Perpisahan" class="memory-image" loading="lazy">
+                <div class="memory-caption">Sampai jumpa di lain kesempatan, teman</div>
+                <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <section class="footer-section">
+        <div class="footer-content">
+            <h2 class="footer-title">Terima Kasih</h2>
+            <p class="footer-text">Untuk setiap tawa, setiap cerita, setiap momen yang telah kita bagi bersama. Kenangan ini akan tetap hidup dalam setiap frame, dalam setiap memori, dalam setiap hati.</p>
+            <p class="footer-signature">— IPS 3, Selamanya dalam Kenangan —</p>
+        </div>
+    </section>
+
+    <!-- MUSIC PLAYER -->
+    <div class="music-player" id="musicPlayer">
+        <div class="player-controls">
+            <button class="player-btn" id="playBtn">
+                <i class="fas fa-play"></i>
+            </button>
+            <div class="visualizer" id="visualizer">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- LIGHTBOX -->
-    <div class="lightbox-overlay" id="lightbox">
-        <button class="lightbox-close" onclick="closeLightbox()">×</button>
-        <button class="lightbox-nav lightbox-prev" onclick="prevImage()">
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose">
+            <i class="fas fa-times"></i>
+        </button>
+        <button class="lightbox-nav lightbox-prev" id="lightboxPrev">
             <i class="fas fa-chevron-left"></i>
         </button>
         <div class="lightbox-content">
-            <img class="lightbox-image" id="lightbox-img" src="" alt="">
-            <div class="lightbox-caption" id="lightbox-caption"></div>
+            <img class="lightbox-image" id="lightboxImage" src="" alt="">
+            <div class="lightbox-caption" id="lightboxCaption"></div>
         </div>
-        <button class="lightbox-nav lightbox-next" onclick="nextImage()">
+        <button class="lightbox-nav lightbox-next" id="lightboxNext">
             <i class="fas fa-chevron-right"></i>
         </button>
     </div>
 
-    <!-- FOOTER -->
-    <footer>
-        <p>© 2024 Album Kenangan Kelas IPS 3 | Setiap Momen Adalah Harta Berharga</p>
-        <div class="download-section">
-            <p>Ingin menyimpan kenangan ini?</p>
-            <button class="download-btn" onclick="downloadAlbum()">
-                <i class="fas fa-download"></i> Unduh Album PDF
-            </button>
-        </div>
-    </footer>
-
     <script>
-        // ================= DATA GALLERY =================
+        // ================= GALLERY DATA =================
         const galleryData = {
             '2022': [
-                { id: '2022-1', src: 'images/2022/diko.jpeg', caption: 'Hari pertama masuk kelas IPS 3 - 15 Juli 2022' },
-                { id: '2022-2', src: 'images/2023/buk.jpeg', caption: 'Buk Kartika Ultah' },
-                { id: '2022-3', src: 'images/2023/WhatsApp Image 2025-12-23 at 10.11.48.jpeg', caption: 'Berenang + bonceng crush' },
-                { id: '2022-4', src: 'images/2023/WhatsApp Image 2025-12-23 at 10.15.24.jpeg', caption: 'Upacara bendera hari Senin yang pertama' }
+                {
+                    id: '2022-1',
+                    src: 'images/2022/diko.jpeg',
+                    caption: 'Hari pertama masuk kelas IPS 3 - Semangat baru, teman baru, cerita baru dimulai.',
+                    alt: 'Hari Pertama Sekolah'
+                },
+                {
+                    id: '2022-2',
+                    src: 'images/2023/buk.jpeg',
+                    caption: 'Ulang tahun Bu Kartika - Momen kebersamaan dengan guru tercinta.',
+                    alt: 'Buk Kartika Ultah'
+                },
+                {
+                    id: '2022-3',
+                    src: 'images/2023/WhatsApp Image 2025-12-23 at 10.11.48.jpeg',
+                    caption: 'Berenang bersama - Aktivitas outdoor yang penuh tawa dan canda.',
+                    alt: 'Berenang'
+                },
+                {
+                    id: '2022-4',
+                    src: 'images/2023/WhatsApp Image 2025-12-23 at 10.15.24.jpeg',
+                    caption: 'Upacara pertama - Menyambut minggu baru dengan semangat.',
+                    alt: 'Upacara Pertama'
+                }
             ],
             '2023': [
-                { id: '2023-1', src: 'images/2023/WhatsApp Image 2025-12-23 at 10.11.45.jpeg', caption: 'Isan Jadi Akhi ' },
-                { id: '2023-2', src: 'images/2023/kelas.jpeg', caption: 'UAS terakhir' },
-                { id: '2023-3', src: 'images/2023/puasa.jpeg', caption: 'bukber pat pais' },
-                { id: '2023-4', src: 'images/2024/foto5.jpg', caption: 'bukber lagi tapi ini last' }
+                {
+                    id: '2023-1',
+                    src: 'images/2023/WhatsApp Image 2025-12-23 at 10.11.45.jpeg',
+                    caption: 'Kegiatan belajar di luar kelas - Pengalaman yang memperkaya wawasan.',
+                    alt: 'Study Tour'
+                },
+                {
+                    id: '2023-2',
+                    src: 'images/2023/kelas.jpeg',
+                    caption: 'Setelah UAS terakhir - Perasaan lega dan pencapaian yang membanggakan.',
+                    alt: 'Selesai UAS'
+                },
+                {
+                    id: '2023-3',
+                    src: 'images/2023/puasa.jpeg',
+                    caption: 'Bukber di rumah teman - Silaturahmi dan kebersamaan di bulan Ramadan.',
+                    alt: 'Bukber Dirumah Pais'
+                },
+                {
+                    id: '2023-4',
+                    src: 'images/2024/foto5.jpg',
+                    caption: 'Bukber terakhir bersama - Kenangan manis sebelum berpisah.',
+                    alt: 'Bukber terakhir Bareng'
+                }
             ],
             '2024': [
-                { id: '2024-1', src: 'images/2024/alkena.jpeg', caption: 'Alkena Di beyond' },
-                { id: '2024-2', src: 'images/2024/pak kodri.jpeg', caption: 'lari lapangan uin with pak kodri' },
-                { id: '2024-3', src: 'images/2024/pepis.jpeg', caption: 'foto sebelum beneran lulus' },
-                { id: '2024-4', src: 'images/2024/IMG-20240508-WA0276.jpg', caption: 'Momen perpisahan dengan guru dan teman-teman' }
+                {
+                    id: '2024-1',
+                    src: 'images/2024/alkena.jpeg',
+                    caption: 'Persiapan kelulusan - Harapan dan cita-cita untuk masa depan.',
+                    alt: 'Persiapan Kelulusan'
+                },
+                {
+                    id: '2024-2',
+                    src: 'images/2024/pak kodri.jpeg',
+                    caption: 'Olahraga bersama Pak Kodri - Semangat dan kesehatan yang diajarkan.',
+                    alt: 'Olahraga With Pak Kodri'
+                },
+                {
+                    id: '2024-3',
+                    src: 'images/2024/pepis.jpeg',
+                    caption: 'Detik-detik terakhir bersama - Momen yang tak akan terlupakan.',
+                    alt: 'Detik-Detik Akhir'
+                },
+                {
+                    id: '2024-4',
+                    src: 'images/2024/perpisahan.jpg',
+                    caption: 'Perpisahan - Sampai jumpa di lain kesempatan, teman-teman.',
+                    alt: 'Momen Perpisahan'
+                }
             ]
         };
 
-        // ================= LIGHTBOX SYSTEM =================
-        let currentImageIndex = 0;
-        let currentYear = '2022';
-        let lightboxOpen = false;
-
-        function openLightbox(imageId) {
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            const lightboxCaption = document.getElementById('lightbox-caption');
-            
-            // Find image data
-            let found = false;
-            for (const year in galleryData) {
-                const index = galleryData[year].findIndex(img => img.id === imageId);
-                if (index !== -1) {
-                    currentYear = year;
-                    currentImageIndex = index;
-                    found = true;
-                    break;
-                }
+        // ================= MASONRY GALLERY SYSTEM =================
+        class MasonryGallery {
+            constructor() {
+                this.galleryItems = [];
+                this.observer = null;
+                this.init();
             }
-            
-            if (found) {
-                const imageData = galleryData[currentYear][currentImageIndex];
-                lightboxImg.src = imageData.src;
-                lightboxCaption.textContent = imageData.caption;
-                lightbox.classList.add('active');
-                lightboxOpen = true;
-                document.body.style.overflow = 'hidden';
+
+            init() {
+                this.galleryItems = Array.from(document.querySelectorAll('.memory-item'));
+                this.setupIntersectionObserver();
+                this.setupDoubleTap();
+                this.setupLightbox();
+                this.optimizeImages();
             }
-        }
 
-        function closeLightbox() {
-            const lightbox = document.getElementById('lightbox');
-            lightbox.classList.remove('active');
-            lightboxOpen = false;
-            document.body.style.overflow = 'auto';
-        }
+            setupIntersectionObserver() {
+                const options = {
+                    root: null,
+                    rootMargin: '0px 0px -100px 0px',
+                    threshold: 0.1
+                };
 
-        function prevImage() {
-            currentImageIndex--;
-            if (currentImageIndex < 0) {
-                // Move to previous year
-                const years = Object.keys(galleryData);
-                const currentYearIndex = years.indexOf(currentYear);
-                if (currentYearIndex > 0) {
-                    currentYear = years[currentYearIndex - 1];
-                    currentImageIndex = galleryData[currentYear].length - 1;
-                } else {
-                    currentImageIndex = 0;
-                }
-            }
-            
-            const imageData = galleryData[currentYear][currentImageIndex];
-            document.getElementById('lightbox-img').src = imageData.src;
-            document.getElementById('lightbox-caption').textContent = imageData.caption;
-        }
+                this.observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry, index) => {
+                        if (entry.isIntersecting) {
+                            // Staggered animation with delay
+                            setTimeout(() => {
+                                entry.target.classList.add('animated');
+                            }, index * 150);
+                            
+                            this.observer.unobserve(entry.target);
+                        }
+                    });
+                }, options);
 
-        function nextImage() {
-            currentImageIndex++;
-            if (currentImageIndex >= galleryData[currentYear].length) {
-                // Move to next year
-                const years = Object.keys(galleryData);
-                const currentYearIndex = years.indexOf(currentYear);
-                if (currentYearIndex < years.length - 1) {
-                    currentYear = years[currentYearIndex + 1];
-                    currentImageIndex = 0;
-                } else {
-                    currentImageIndex = galleryData[currentYear].length - 1;
-                }
-            }
-            
-            const imageData = galleryData[currentYear][currentImageIndex];
-            document.getElementById('lightbox-img').src = imageData.src;
-            document.getElementById('lightbox-caption').textContent = imageData.caption;
-        }
-
-        // Close lightbox with ESC key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && lightboxOpen) {
-                closeLightbox();
-            } else if (e.key === 'ArrowLeft' && lightboxOpen) {
-                prevImage();
-            } else if (e.key === 'ArrowRight' && lightboxOpen) {
-                nextImage();
-            }
-        });
-
-        // ================= DARK MODE =================
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
-
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            if (savedTheme === 'dark') {
-                body.classList.add('dark-mode');
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-            }
-        }
-
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            
-            if (body.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-                themeToggle.title = 'Mode Terang';
-            } else {
-                localStorage.setItem('theme', 'light');
-                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-                themeToggle.title = 'Mode Malam';
-            }
-        });
-
-        // ================= MUSIC PLAYER =================
-        const musicToggle = document.getElementById('musicToggle');
-        const bgMusic = new Audio('music/backsound.mp3');
-        bgMusic.loop = true;
-        bgMusic.volume = 0.3;
-        let isPlaying = false;
-
-        musicToggle.addEventListener('click', () => {
-            if (isPlaying) {
-                bgMusic.pause();
-                musicToggle.innerHTML = '<i class="fas fa-music"></i>';
-                musicToggle.title = 'Putar Musik';
-            } else {
-                bgMusic.play().catch(e => {
-                    console.log('Autoplay diblokir, klik lagi untuk memutar');
+                this.galleryItems.forEach(item => {
+                    this.observer.observe(item);
                 });
-                musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
-                musicToggle.title = 'Hentikan Musik';
             }
-            isPlaying = !isPlaying;
+
+            setupDoubleTap() {
+                this.galleryItems.forEach(item => {
+                    let lastTap = 0;
+                    
+                    item.addEventListener('click', (e) => {
+                        const currentTime = new Date().getTime();
+                        const tapLength = currentTime - lastTap;
+                        
+                        if (tapLength < 300 && tapLength > 0) {
+                            // Double tap detected
+                            this.showHeartAnimation(item, e);
+                            this.vibrate();
+                            lastTap = 0;
+                        } else {
+                            lastTap = currentTime;
+                        }
+                    });
+                });
+            }
+
+            showHeartAnimation(item, event) {
+                const heart = item.querySelector('.heart-overlay');
+                if (!heart) return;
+                
+                // Calculate position based on click/tap
+                const rect = item.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                
+                heart.style.left = `${x}px`;
+                heart.style.top = `${y}px`;
+                
+                heart.classList.add('active');
+                
+                setTimeout(() => {
+                    heart.classList.remove('active');
+                }, 600);
+            }
+
+            setupLightbox() {
+                const lightbox = document.getElementById('lightbox');
+                const lightboxImage = document.getElementById('lightboxImage');
+                const lightboxCaption = document.getElementById('lightboxCaption');
+                
+                this.galleryItems.forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        // Check if it's a double tap first
+                        if (e.detail === 2) return;
+                        
+                        const itemId = item.dataset.id;
+                        this.openLightbox(itemId);
+                    });
+                });
+            }
+
+            openLightbox(itemId) {
+                const lightbox = document.getElementById('lightbox');
+                const lightboxImage = document.getElementById('lightboxImage');
+                const lightboxCaption = document.getElementById('lightboxCaption');
+                
+                // Find image data
+                for (const year in galleryData) {
+                    const image = galleryData[year].find(img => img.id === itemId);
+                    if (image) {
+                        lightboxImage.src = image.src;
+                        lightboxImage.alt = image.alt;
+                        lightboxCaption.textContent = image.caption;
+                        
+                        // Store current image info
+                        this.currentImage = image;
+                        this.currentYear = year;
+                        this.currentIndex = galleryData[year].findIndex(img => img.id === itemId);
+                        
+                        break;
+                    }
+                }
+                
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                // Setup swipe gestures
+                this.setupSwipeGestures();
+            }
+
+            setupSwipeGestures() {
+                const lightboxImage = document.getElementById('lightboxImage');
+                let startX = 0;
+                let endX = 0;
+                
+                lightboxImage.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                }, { passive: true });
+                
+                lightboxImage.addEventListener('touchend', (e) => {
+                    endX = e.changedTouches[0].clientX;
+                    const swipeDistance = endX - startX;
+                    
+                    if (Math.abs(swipeDistance) > 50) {
+                        if (swipeDistance > 0) {
+                            this.prevImage();
+                        } else {
+                            this.nextImage();
+                        }
+                    }
+                }, { passive: true });
+            }
+
+            closeLightbox() {
+                const lightbox = document.getElementById('lightbox');
+                lightbox.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+
+            nextImage() {
+                if (!this.currentYear || this.currentIndex === undefined) return;
+                
+                const yearImages = galleryData[this.currentYear];
+                this.currentIndex = (this.currentIndex + 1) % yearImages.length;
+                this.updateLightboxContent(yearImages[this.currentIndex]);
+            }
+
+            prevImage() {
+                if (!this.currentYear || this.currentIndex === undefined) return;
+                
+                const yearImages = galleryData[this.currentYear];
+                this.currentIndex = (this.currentIndex - 1 + yearImages.length) % yearImages.length;
+                this.updateLightboxContent(yearImages[this.currentIndex]);
+            }
+
+            updateLightboxContent(image) {
+                const lightboxImage = document.getElementById('lightboxImage');
+                const lightboxCaption = document.getElementById('lightboxCaption');
+                
+                lightboxImage.style.opacity = '0';
+                lightboxCaption.style.opacity = '0';
+                
+                setTimeout(() => {
+                    lightboxImage.src = image.src;
+                    lightboxImage.alt = image.alt;
+                    lightboxCaption.textContent = image.caption;
+                    
+                    setTimeout(() => {
+                        lightboxImage.style.opacity = '1';
+                        lightboxCaption.style.opacity = '1';
+                    }, 50);
+                }, 200);
+            }
+
+            optimizeImages() {
+                // Lazy loading optimization
+                const images = document.querySelectorAll('.memory-image');
+                images.forEach(img => {
+                    img.loading = 'lazy';
+                    img.decoding = 'async';
+                });
+            }
+
+            vibrate() {
+                // Haptic feedback for mobile
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            }
+        }
+
+        // ================= MUSIC PLAYER & VISUALIZER =================
+        // ================= MUSIC PLAYER & VISUALIZER =================
+class MusicPlayer {
+    constructor() {
+        this.player = document.getElementById('musicPlayer');
+        this.playBtn = document.getElementById('playBtn');
+        this.visualizer = document.getElementById('visualizer');
+        this.bars = this.visualizer.querySelectorAll('.bar');
+        
+        this.audio = new Audio('music/backsound.mp3');
+        this.audio.loop = true;
+        this.audio.volume = 0.3;
+        
+        this.isPlaying = false;
+        this.animationFrame = null;
+        
+        this.init();
+    }
+
+    init() {
+        this.setupEventListeners();
+        this.showPlayer();
+        this.attemptAutoplay(); // Coba autoplay
+    }
+
+    setupEventListeners() {
+        this.playBtn.addEventListener('click', () => this.togglePlay());
+        
+        this.audio.addEventListener('play', () => {
+            this.isPlaying = true;
+            this.updatePlayButton();
+            this.startVisualizer();
+        });
+        
+        this.audio.addEventListener('pause', () => {
+            this.isPlaying = false;
+            this.updatePlayButton();
+            this.stopVisualizer();
+        });
+        
+        // Pause saat tab tidak aktif (hemat baterai)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && this.isPlaying) {
+                this.audio.pause();
+            } else if (!document.hidden && this.isPlaying) {
+                this.audio.play().catch(console.error);
+            }
+        });
+    }
+
+    // Update tombol play/pause
+    updatePlayButton() {
+        if (this.isPlaying) {
+            this.playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            this.playBtn.classList.add('play-active');
+            this.playBtn.title = 'Pause Musik';
+        } else {
+            this.playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            this.playBtn.classList.remove('play-active');
+            this.playBtn.title = 'Play Musik';
+        }
+    }
+
+    // Coba autoplay dengan user interaction
+    attemptAutoplay() {
+        const tryPlay = () => {
+            this.audio.play()
+                .then(() => {
+                    console.log('Musik autoplay berhasil');
+                    this.isPlaying = true;
+                    this.updatePlayButton();
+                })
+                .catch(error => {
+                    console.log('Autoplay diblokir, butuh interaksi user:', error);
+                    // Tampilkan indikator bahwa musik ready
+                    this.showReadyIndicator();
+                });
+        };
+
+        // Coba autoplay langsung
+        setTimeout(() => {
+            tryPlay();
+        }, 1000);
+
+        // Setup interaksi untuk trigger autoplay
+        this.setupAutoplayTriggers();
+    }
+
+    // Setup trigger untuk autoplay setelah interaksi user
+    setupAutoplayTriggers() {
+        const playOnInteraction = () => {
+            if (!this.isPlaying) {
+                this.audio.play()
+                    .then(() => {
+                        this.isPlaying = true;
+                        this.updatePlayButton();
+                    })
+                    .catch(console.error);
+            }
+        };
+
+        // Trigger autoplay pada berbagai interaksi
+        const interactions = ['click', 'touchstart', 'keydown', 'scroll'];
+        interactions.forEach(eventType => {
+            document.addEventListener(eventType, playOnInteraction, { once: true });
         });
 
-        // ================= TIMELINE =================
-        function updateTimeline() {
-            const sections = document.querySelectorAll('.year-section');
-            const timelineItems = document.querySelectorAll('.timeline-item');
-            const scrollPosition = window.scrollY + 100;
-            
-            let currentSection = '';
-            
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
+        // Juga trigger pada tombol play
+        this.playBtn.addEventListener('click', playOnInteraction);
+    }
+
+    // Tampilkan indikator musik siap
+    showReadyIndicator() {
+        // Tambah efek berkedip pada tombol play
+        const blinkInterval = setInterval(() => {
+            this.playBtn.classList.toggle('blink');
+        }, 800);
+
+        // Hentikan blinking setelah 5 detik
+        setTimeout(() => {
+            clearInterval(blinkInterval);
+            this.playBtn.classList.remove('blink');
+        }, 5000);
+    }
+
+    showPlayer() {
+        setTimeout(() => {
+            this.player.classList.add('show');
+        }, 2000);
+    }
+
+    togglePlay() {
+        if (this.isPlaying) {
+            this.pause();
+        } else {
+            this.play();
+        }
+    }
+
+    play() {
+        this.audio.play().catch(e => {
+            console.log('Error playing:', e);
+            // Jika gagal, coba dengan volume 0
+            this.audio.volume = 0;
+            this.audio.play()
+                .then(() => {
+                    // Setelah berhasil, naikkan volume
+                    setTimeout(() => {
+                        this.audio.volume = 0.3;
+                    }, 100);
+                })
+                .catch(console.error);
+        });
+    }
+
+    pause() {
+        this.audio.pause();
+    }
+
+    startVisualizer() {
+        const updateBars = () => {
+            this.bars.forEach((bar, index) => {
+                const height = 5 + Math.random() * 20;
+                bar.style.height = `${height}px`;
                 
-                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                    currentSection = section.id;
-                }
+                const delay = Math.random() * 0.3;
+                bar.style.animationDelay = `${delay}s`;
             });
             
-            timelineItems.forEach(item => {
-                item.classList.remove('active');
-                const year = item.getAttribute('data-year');
-                if (currentSection === `tahun-${year}`) {
-                    item.classList.add('active');
+            this.animationFrame = requestAnimationFrame(updateBars);
+        };
+        
+        updateBars();
+    }
+
+    stopVisualizer() {
+        if (this.animationFrame) {
+            cancelAnimationFrame(this.animationFrame);
+            this.animationFrame = null;
+        }
+        
+        this.bars.forEach(bar => {
+            bar.style.height = '5px';
+        });
+    }
+}
+
+        // ================= CONFETTI SYSTEM (2024 SECTION) =================
+        class ConfettiSystem {
+            constructor() {
+                this.section2024 = document.querySelector('.year-2024');
+                this.confettiCount = 30;
+                this.sparkleCount = 50;
+                
+                this.init();
+            }
+
+            init() {
+                this.createConfetti();
+                this.createSparkles();
+                this.setupScrollTrigger();
+            }
+
+            createConfetti() {
+                for (let i = 0; i < this.confettiCount; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    
+                    // Random properties
+                    const size = 5 + Math.random() * 10;
+                    const color = `hsl(${Math.random() * 30 + 30}, 70%, 60%)`;
+                    const left = Math.random() * 100;
+                    const delay = Math.random() * 2;
+                    const duration = 2 + Math.random() * 3;
+                    
+                    confetti.style.width = `${size}px`;
+                    confetti.style.height = `${size}px`;
+                    confetti.style.background = color;
+                    confetti.style.left = `${left}vw`;
+                    confetti.style.top = '-20px';
+                    confetti.style.opacity = '0';
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    confetti.style.transition = `all ${duration}s cubic-bezier(0.1, 0.8, 0.3, 1) ${delay}s`;
+                    
+                    this.section2024.appendChild(confetti);
                 }
-            });
+            }
+
+            createSparkles() {
+                for (let i = 0; i < this.sparkleCount; i++) {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle';
+                    
+                    const left = Math.random() * 100;
+                    const delay = Math.random() * 3;
+                    const duration = 1 + Math.random() * 2;
+                    
+                    sparkle.style.left = `${left}vw`;
+                    sparkle.style.top = `${Math.random() * 100}vh`;
+                    sparkle.style.opacity = '0';
+                    sparkle.style.transition = `all ${duration}s ease ${delay}s`;
+                    
+                    this.section2024.appendChild(sparkle);
+                }
+            }
+
+            setupScrollTrigger() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            this.triggerConfetti();
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.3 });
+                
+                observer.observe(this.section2024);
+            }
+
+            triggerConfetti() {
+                // Animate confetti
+                const confetti = document.querySelectorAll('.confetti');
+                confetti.forEach((piece, index) => {
+                    setTimeout(() => {
+                        piece.style.opacity = '0.8';
+                        piece.style.top = `${100 + Math.random() * 50}vh`;
+                        piece.style.transform = `rotate(${Math.random() * 720}deg)`;
+                        
+                        // Fade out
+                        setTimeout(() => {
+                            piece.style.opacity = '0';
+                        }, 2000);
+                    }, index * 100);
+                });
+                
+                // Animate sparkles
+                const sparkles = document.querySelectorAll('.sparkle');
+                sparkles.forEach((sparkle, index) => {
+                    setTimeout(() => {
+                        sparkle.style.opacity = '0.6';
+                        sparkle.style.transform = `scale(${1 + Math.random()})`;
+                        
+                        // Twinkle effect
+                        setTimeout(() => {
+                            sparkle.style.opacity = '0';
+                        }, 1000);
+                    }, index * 50);
+                });
+            }
         }
 
-        // ================= SCROLL ANIMATIONS =================
-        function checkScroll() {
-            const sections = document.querySelectorAll('.year-section');
-            const windowHeight = window.innerHeight;
-            
-            sections.forEach(section => {
-                const sectionTop = section.getBoundingClientRect().top;
+        // ================= NAVIGATION & SMOOTH SCROLL =================
+        class Navigation {
+            constructor() {
+                this.navbar = document.getElementById('navbar');
+                this.yearLinks = document.querySelectorAll('.year-link');
+                this.sections = document.querySelectorAll('.memory-section, .hero-section');
                 
-                if (sectionTop < windowHeight * 0.85) {
-                    section.classList.add('visible');
-                }
-            });
-            
-            updateTimeline();
-        }
+                this.init();
+            }
 
-        // ================= NAVIGATION =================
-        function scrollToYear(yearId) {
-            const element = document.getElementById(yearId);
-            if (element) {
+            init() {
+                this.setupScrollEffects();
+                this.setupNavLinks();
+                this.setupActiveSectionObserver();
+            }
+
+            setupScrollEffects() {
+                let ticking = false;
+                
+                window.addEventListener('scroll', () => {
+                    if (!ticking) {
+                        window.requestAnimationFrame(() => {
+                            this.handleScroll();
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                });
+            }
+
+            handleScroll() {
+                const scrollY = window.scrollY;
+                
+                // Navbar effect
+                if (scrollY > 100) {
+                    this.navbar.classList.add('scrolled');
+                } else {
+                    this.navbar.classList.remove('scrolled');
+                }
+            }
+
+            setupNavLinks() {
+                this.yearLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetId = link.getAttribute('href');
+                        this.scrollToSection(targetId);
+                        this.setActiveLink(link);
+                    });
+                });
+            }
+
+            scrollToSection(sectionId) {
+                const element = document.querySelector(sectionId);
+                if (!element) return;
+                
+                const navbarHeight = this.navbar.offsetHeight;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - navbarHeight - 20;
+                
                 window.scrollTo({
-                    top: element.offsetTop - 80,
+                    top: offsetPosition,
                     behavior: 'smooth'
                 });
+            }
+
+            setActiveLink(activeLink) {
+                this.yearLinks.forEach(link => link.classList.remove('active'));
+                activeLink.classList.add('active');
+            }
+
+            setupActiveSectionObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const id = entry.target.id;
+                            this.updateActiveNav(id);
+                        }
+                    });
+                }, { 
+                    root: null,
+                    rootMargin: '-20% 0px -70% 0px',
+                    threshold: 0
+                });
                 
-                // Update navigation
-                document.querySelectorAll('.nav-menu a').forEach(link => {
+                this.sections.forEach(section => {
+                    observer.observe(section);
+                });
+            }
+
+            updateActiveNav(sectionId) {
+                this.yearLinks.forEach(link => {
                     link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${sectionId}`) {
+                        link.classList.add('active');
+                    }
                 });
-                document.querySelector(`.nav-menu a[href="#${yearId}"]`).classList.add('active');
             }
         }
 
-        // ================= DOWNLOAD ALBUM (PDF) =================
-        async function downloadAlbum() {
-            const downloadBtn = document.querySelector('.download-btn');
-            const originalText = downloadBtn.innerHTML;
-            
-            downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Membuat PDF...';
-            downloadBtn.disabled = true;
-            
-            try {
-                // In real implementation, you would use jsPDF and html2canvas
-                // For demo purposes, we'll create a simple alert
-                alert('Fitur download PDF sedang dalam pengembangan.\n\nUntuk versi demo, Anda bisa:\n1. Screenshot halaman ini\n2. Save halaman web (Ctrl+S)\n3. Hubungi admin untuk versi PDF lengkap');
-            } catch (error) {
-                console.error('Error generating PDF:', error);
-                alert('Terjadi kesalahan saat membuat PDF. Coba lagi nanti.');
-            } finally {
-                downloadBtn.innerHTML = originalText;
-                downloadBtn.disabled = false;
-            }
-        }
-
-        // ================= INITIALIZATION =================
+        // ================= INITIALIZE EVERYTHING =================
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize theme
-            initTheme();
+            // Initialize systems
+            const masonryGallery = new MasonryGallery();
+            const musicPlayer = new MusicPlayer();
+            const navigation = new Navigation();
+            const confettiSystem = new ConfettiSystem();
             
-            // Initial scroll check
-            checkScroll();
+            // Setup lightbox controls
+            const lightbox = document.getElementById('lightbox');
+            const lightboxClose = document.getElementById('lightboxClose');
+            const lightboxPrev = document.getElementById('lightboxPrev');
+            const lightboxNext = document.getElementById('lightboxNext');
             
-            // Event listeners
-            window.addEventListener('scroll', checkScroll);
+            // Expose functions globally
+            window.openLightbox = (itemId) => masonryGallery.openLightbox(itemId);
+            window.closeLightbox = () => masonryGallery.closeLightbox();
+            window.nextImage = () => masonryGallery.nextImage();
+            window.prevImage = () => masonryGallery.prevImage();
             
-            // Navigation clicks
-            document.querySelectorAll('.nav-menu a').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = link.getAttribute('href').substring(1);
-                    
-                    document.querySelectorAll('.nav-menu a').forEach(l => l.classList.remove('active'));
-                    link.classList.add('active');
-                    
-                    scrollToYear(targetId);
-                });
-            });
+            // Setup lightbox event listeners
+            lightboxClose.addEventListener('click', () => masonryGallery.closeLightbox());
+            lightboxPrev.addEventListener('click', () => masonryGallery.prevImage());
+            lightboxNext.addEventListener('click', () => masonryGallery.nextImage());
             
-            // Close lightbox when clicking overlay
-            document.getElementById('lightbox').addEventListener('click', (e) => {
-                if (e.target.classList.contains('lightbox-overlay')) {
-                    closeLightbox();
+            // Keyboard navigation for lightbox
+            document.addEventListener('keydown', (e) => {
+                if (!lightbox.classList.contains('active')) return;
+                
+                switch(e.key) {
+                    case 'Escape':
+                        masonryGallery.closeLightbox();
+                        break;
+                    case 'ArrowLeft':
+                        masonryGallery.prevImage();
+                        break;
+                    case 'ArrowRight':
+                        masonryGallery.nextImage();
+                        break;
                 }
             });
             
-            console.log('Galeri Kenangan IPS 3 siap digunakan!');
+            // Close lightbox when clicking outside
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) {
+                    masonryGallery.closeLightbox();
+                }
+            });
+            
+            console.log('✨ Digital Memory Album IPS 3 - Premium Edition ✨');
+            console.log('Features loaded: Masonry Gallery, Music Visualizer, Double-tap Hearts, Confetti Effects');
         });
+
+        // Performance optimization
+        if ('connection' in navigator) {
+            const connection = navigator.connection;
+            if (connection.saveData || connection.effectiveType.includes('2g')) {
+                // Reduce animations for slow connections
+                document.documentElement.style.setProperty('--transition-smooth', 'all 0.2s ease');
+            }
+        }
+
+        // Progressive enhancement for older browsers
+        if (!('IntersectionObserver' in window)) {
+            // Fallback for older browsers
+            document.querySelectorAll('.memory-item').forEach(item => {
+                item.classList.add('animated');
+            });
+        }
     </script>
 </body>
 </html>
