@@ -11,6 +11,257 @@
     
     <style>
 
+        /* ========== ETALASE FOTO - CAROUSEL ========== */
+.etalase-section {
+    padding: var(--space-xl) var(--space-md);
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    background: linear-gradient(to bottom, rgba(232, 220, 204, 0.1), transparent);
+}
+
+.etalase-header {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+}
+
+.etalase-subtitle {
+    max-width: 600px;
+    margin: 0 auto;
+    color: var(--primary-light);
+    font-style: italic;
+}
+
+/* Carousel Container */
+.carousel-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: var(--shadow-strong);
+    background: var(--neutral-white);
+    padding: var(--space-lg) 0;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s var(--transition-smooth);
+    gap: var(--space-md);
+    padding: 0 var(--space-md);
+}
+
+/* Etalase Card */
+.etalase-card {
+    flex: 0 0 300px;
+    background: var(--neutral-white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-subtle);
+    transition: all 0.4s var(--transition-smooth);
+    position: relative;
+    cursor: pointer;
+}
+
+.etalase-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-medium);
+}
+
+.etalase-card:hover .etalase-image {
+    transform: scale(1.05);
+}
+
+.etalase-image-container {
+    height: 250px;
+    overflow: hidden;
+    position: relative;
+}
+
+.etalase-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s var(--transition-smooth);
+}
+
+.etalase-info {
+    padding: var(--space-md);
+    position: relative;
+}
+
+.etalase-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-bottom: var(--space-xs);
+    position: relative;
+    display: inline-block;
+}
+
+.etalase-name::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--accent-gold);
+}
+
+.etalase-title {
+    font-size: 0.9rem;
+    color: var(--accent-gold);
+    font-weight: 500;
+    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.etalase-hobby {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-sm);
+    color: var(--primary-light);
+    font-size: 0.95rem;
+}
+
+.etalase-hobby i {
+    color: var(--accent-gold);
+}
+
+.etalase-bio {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--primary-light);
+    margin-bottom: var(--space-md);
+    font-style: italic;
+}
+
+/* Instagram Button */
+.instagram-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Crimson Text', serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+    text-decoration: none;
+}
+
+.instagram-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(193, 53, 132, 0.3);
+    filter: brightness(1.1);
+}
+
+.instagram-btn:active {
+    transform: translateY(0);
+}
+
+/* Carousel Navigation */
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--neutral-white);
+    border: 2px solid var(--accent-sand);
+    color: var(--primary-light);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s var(--transition-smooth);
+    z-index: 10;
+    box-shadow: var(--shadow-subtle);
+}
+
+.carousel-nav:hover {
+    background: var(--accent-gold);
+    color: var(--neutral-white);
+    border-color: var(--accent-gold);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-nav.prev {
+    left: 20px;
+}
+
+.carousel-nav.next {
+    right: 20px;
+}
+
+/* Carousel Indicators */
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: var(--space-lg);
+}
+
+.indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-sand);
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+}
+
+.indicator.active {
+    background: var(--accent-gold);
+    transform: scale(1.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .etalase-card {
+        flex: 0 0 280px;
+    }
+    
+    .carousel-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .carousel-nav.prev {
+        left: 10px;
+    }
+    
+    .carousel-nav.next {
+        right: 10px;
+    }
+    
+    .etalase-image-container {
+        height: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .etalase-card {
+        flex: 0 0 250px;
+    }
+    
+    .carousel-track {
+        gap: var(--space-sm);
+        padding: 0 var(--space-sm);
+    }
+}
+
         /* Efek blinking untuk tombol play */
 .player-btn.blink {
     animation: blinkEffect 0.8s ease infinite alternate;
@@ -878,6 +1129,145 @@
         </div>
     </section>
 
+    <!-- Tambahkan tepat SEBELUM section 2022 -->
+<section class="etalase-section">
+    <div class="section-header etalase-header">
+        <h2>Galeri Anggota IPS 3</h2>
+        <p class="text-lead etalase-subtitle">Kenali lebih dekat teman-teman kelas, impian mereka, dan cerita di balik senyuman.</p>
+    </div>
+    
+    <div class="carousel-container">
+        <button class="carousel-nav prev">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <button class="carousel-nav next">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <div class="carousel-track" id="etalaseTrack">
+            <!-- Anggota 1 -->
+            <div class="etalase-card">
+                <div class="etalase-image-container">
+                    <img src="images/2022/contoh.jpeg" alt="Ahmad Rizki" class="etalase-image">
+                </div>
+                <div class="etalase-info">
+                    <h3 class="etalase-name">payd</h3>
+                    <p class="etalase-title">Ketua Kelas IPS 3</p>
+                    
+                    <div class="etalase-hobby">
+                        <i class="fas fa-book"></i>
+                        <span>Tech Enthusiast</span>
+                    </div>
+                    
+                    <p class="etalase-bio">"Percaya bahwa setiap momen memiliki cerita. Senang mengabadikan keindahan dalam frame dan kata-kata."</p>
+                    
+                    <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
+                        <i class="fab fa-instagram"></i>
+                        <span>Follow on Instagram</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Anggota 2 -->
+            <div class="etalase-card">
+                <div class="etalase-image-container">
+                    <img src="images/2022/kacamata.jpeg" alt="Siti Aisyah" class="etalase-image">
+                </div>
+                <div class="etalase-info">
+                    <h3 class="etalase-name">Siti Aisyah</h3>
+                    <p class="etalase-title">Bendahara & Aktivis</p>
+                    
+                    <div class="etalase-hobby">
+                        <i class="fas fa-paint-brush"></i>
+                        <span>Seni & Lingkungan</span>
+                    </div>
+                    
+                    <p class="etalase-bio">"Seni adalah cara saya memahami dunia. Aktif dalam kegiatan lingkungan dan seni visual."</p>
+                    
+                    <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
+                        <i class="fab fa-instagram"></i>
+                        <span>Follow on Instagram</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Anggota 3 -->
+            <div class="etalase-card">
+                <div class="etalase-image-container">
+                    <img src="images/2022/kacamata.jpeg" alt="Budi Santoso" class="etalase-image">
+                </div>
+                <div class="etalase-info">
+                    <h3 class="etalase-name">Budi Santoso</h3>
+                    <p class="etalase-title">Atlet & Organisator</p>
+                    
+                    <div class="etalase-hobby">
+                        <i class="fas fa-futbol"></i>
+                        <span>Olahraga & Musik</span>
+                    </div>
+                    
+                    <p class="etalase-bio">"Energi positif datang dari gerak dan irama. Tim futsal sekolah dan pemain bass band."</p>
+                    
+                    <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
+                        <i class="fab fa-instagram"></i>
+                        <span>Follow on Instagram</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Anggota 4 -->
+            <div class="etalase-card">
+                <div class="etalase-image-container">
+                    <img src="images/2022/kacamata.jpeg" alt="Maya Putri" class="etalase-image">
+                </div>
+                <div class="etalase-info">
+                    <h3 class="etalase-name">Maya Putri</h3>
+                    <p class="etalase-title">Penulis & Debat</p>
+                    
+                    <div class="etalase-hobby">
+                        <i class="fas fa-pen-fancy"></i>
+                        <span>Menulis & Debat</span>
+                    </div>
+                    
+                    <p class="etalase-bio">"Kata-kata adalah senjata terbaik. Juara lomba debat se-provinsi dan penulis puisi."</p>
+                    
+                    <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
+                        <i class="fab fa-instagram"></i>
+                        <span>Follow on Instagram</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Anggota 5 -->
+            <div class="etalase-card">
+                <div class="etalase-image-container">
+                    <img src="images/2022/kacamata.jpeg" alt="Rizky Pratama" class="etalase-image">
+                </div>
+                <div class="etalase-info">
+                    <h3 class="etalase-name">Rizky Pratama</h3>
+                    <p class="etalase-title">Tech Enthusiast</p>
+                    
+                    <div class="etalase-hobby">
+                        <i class="fas fa-laptop-code"></i>
+                        <span>Teknologi & Robotika</span>
+                    </div>
+                    
+                    <p class="etalase-bio">"Masa depan ada di teknologi. Pernah membuat robot sederhana dan aktif di klub programming."</p>
+                    
+                    <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
+                        <i class="fab fa-instagram"></i>
+                        <span>Follow on Instagram</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="carousel-indicators" id="etalaseIndicators">
+            <!-- Indicators akan di-generate oleh JavaScript -->
+        </div>
+    </div>
+</section>
+
     <!-- 2022 SECTION -->
     <section id="year-2022" class="memory-section">
         <div class="section-header">
@@ -1035,6 +1425,163 @@
     </div>
 
     <script>
+
+        // ================= ETALASE CAROUSEL SYSTEM =================
+class EtalaseCarousel {
+    constructor() {
+        this.track = document.getElementById('etalaseTrack');
+        this.cards = document.querySelectorAll('.etalase-card');
+        this.prevBtn = document.querySelector('.carousel-nav.prev');
+        this.nextBtn = document.querySelector('.carousel-nav.next');
+        this.indicatorsContainer = document.getElementById('etalaseIndicators');
+        
+        this.currentIndex = 0;
+        this.cardWidth = 300; // Sesuai dengan flex-basis di CSS
+        this.gap = 32; // Sesuai dengan gap di CSS
+        this.totalCards = this.cards.length;
+        
+        this.init();
+    }
+
+    init() {
+        this.createIndicators();
+        this.setupEventListeners();
+        this.setupAutoSlide();
+        this.updateCarousel();
+        
+        // Auto-detect card width untuk responsive
+        this.updateCardWidth();
+        window.addEventListener('resize', () => this.updateCardWidth());
+    }
+
+    updateCardWidth() {
+        if (this.cards[0]) {
+            const cardStyle = window.getComputedStyle(this.cards[0]);
+            this.cardWidth = this.cards[0].offsetWidth;
+            this.gap = parseInt(cardStyle.marginRight) || 32;
+            this.updateCarousel();
+        }
+    }
+
+    createIndicators() {
+        for (let i = 0; i < this.totalCards; i++) {
+            const indicator = document.createElement('div');
+            indicator.className = 'indicator';
+            if (i === 0) indicator.classList.add('active');
+            
+            indicator.addEventListener('click', () => {
+                this.goToSlide(i);
+            });
+            
+            this.indicatorsContainer.appendChild(indicator);
+        }
+    }
+
+    setupEventListeners() {
+        this.prevBtn.addEventListener('click', () => this.prevSlide());
+        this.nextBtn.addEventListener('click', () => this.nextSlide());
+        
+        // Swipe gestures untuk mobile
+        this.setupSwipeGestures();
+    }
+
+    setupSwipeGestures() {
+        let startX = 0;
+        let endX = 0;
+        
+        this.track.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        }, { passive: true });
+        
+        this.track.addEventListener('touchend', (e) => {
+            endX = e.changedTouches[0].clientX;
+            const swipeDistance = endX - startX;
+            
+            if (Math.abs(swipeDistance) > 50) {
+                if (swipeDistance > 0) {
+                    this.prevSlide();
+                } else {
+                    this.nextSlide();
+                }
+            }
+        }, { passive: true });
+    }
+
+    setupAutoSlide() {
+        // Auto slide setiap 5 detik
+        setInterval(() => {
+            this.nextSlide();
+        }, 5000);
+    }
+
+    nextSlide() {
+        this.currentIndex = (this.currentIndex + 1) % this.totalCards;
+        this.updateCarousel();
+    }
+
+    prevSlide() {
+        this.currentIndex = (this.currentIndex - 1 + this.totalCards) % this.totalCards;
+        this.updateCarousel();
+    }
+
+    goToSlide(index) {
+        this.currentIndex = index;
+        this.updateCarousel();
+    }
+
+    updateCarousel() {
+        const translateX = -(this.currentIndex * (this.cardWidth + this.gap));
+        this.track.style.transform = `translateX(${translateX}px)`;
+        
+        // Update indicators
+        document.querySelectorAll('.indicator').forEach((indicator, index) => {
+            indicator.classList.toggle('active', index === this.currentIndex);
+        });
+    }
+}
+
+// ================= DATA ANGGOTA (OPTIONAL) =================
+// Jika ingin membuat dinamis dari array JavaScript
+const anggotaData = [
+    {
+        nama: "Ahmad Rizki",
+        title: "Ketua Kelas IPS 3",
+        hobi: "Filsafat & Fotografi",
+        bio: "Percaya bahwa setiap momen memiliki cerita. Senang mengabadikan keindahan dalam frame dan kata-kata.",
+        instagram: "https://instagram.com/ahmad.rizki",
+        foto: "images/anggota/anggota1.jpg"
+    },
+    {
+        nama: "Siti Aisyah",
+        title: "Bendahara & Aktivis",
+        hobi: "Seni & Lingkungan",
+        bio: "Seni adalah cara saya memahami dunia. Aktif dalam kegiatan lingkungan dan seni visual.",
+        instagram: "https://instagram.com/siti.aisyah",
+        foto: "images/anggota/anggota2.jpg"
+    },
+    {
+        nama: "Budi Santoso",
+        title: "Atlet & Organisator",
+        hobi: "Olahraga & Musik",
+        bio: "Energi positif datang dari gerak dan irama. Tim futsal sekolah dan pemain bass band.",
+        instagram: "https://instagram.com/budi.santoso",
+        foto: "images/anggota/anggota3.jpg"
+    }
+    // Tambahkan data anggota lainnya...
+];
+
+// ================= UPDATE INITIALIZATION =================
+// Update kode initialization di bagian bawah file
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize systems
+    const masonryGallery = new MasonryGallery();
+    const musicPlayer = new MusicPlayer();
+    const navigation = new Navigation();
+    const confettiSystem = new ConfettiSystem();
+    const etalaseCarousel = new EtalaseCarousel(); // Tambahkan ini
+    
+    // ... kode lainnya tetap sama ...
+});
         // ================= GALLERY DATA =================
         const galleryData = {
             '2022': [
