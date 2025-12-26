@@ -10,307 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Crimson+Text:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
-
-        /* ========== ETALASE FOTO - CAROUSEL ========== */
-.etalase-section {
-    padding: var(--space-xl) var(--space-md);
-    max-width: 1400px;
-    margin: 0 auto;
-    position: relative;
-    background: linear-gradient(to bottom, rgba(232, 220, 204, 0.1), transparent);
-}
-
-.etalase-header {
-    text-align: center;
-    margin-bottom: var(--space-xl);
-}
-
-.etalase-subtitle {
-    max-width: 600px;
-    margin: 0 auto;
-    color: var(--primary-light);
-    font-style: italic;
-}
-
-/* Carousel Container */
-.carousel-container {
-    position: relative;
-    overflow: hidden;
-    border-radius: 12px;
-    box-shadow: var(--shadow-strong);
-    background: var(--neutral-white);
-    padding: var(--space-lg) 0;
-}
-
-.carousel-track {
-    display: flex;
-    transition: transform 0.5s var(--transition-smooth);
-    gap: var(--space-md);
-    padding: 0 var(--space-md);
-}
-
-/* Etalase Card */
-.etalase-card {
-    flex: 0 0 300px;
-    background: var(--neutral-white);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: var(--shadow-subtle);
-    transition: all 0.4s var(--transition-smooth);
-    position: relative;
-    cursor: pointer;
-}
-
-.etalase-card:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow-medium);
-}
-
-.etalase-card:hover .etalase-image {
-    transform: scale(1.05);
-}
-
-.etalase-image-container {
-    height: 250px;
-    overflow: hidden;
-    position: relative;
-}
-
-.etalase-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s var(--transition-smooth);
-}
-
-.etalase-info {
-    padding: var(--space-md);
-    position: relative;
-}
-
-.etalase-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: var(--primary-dark);
-    margin-bottom: var(--space-xs);
-    position: relative;
-    display: inline-block;
-}
-
-.etalase-name::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 40px;
-    height: 2px;
-    background: var(--accent-gold);
-}
-
-.etalase-title {
-    font-size: 0.9rem;
-    color: var(--accent-gold);
-    font-weight: 500;
-    margin-bottom: var(--space-sm);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.etalase-hobby {
-    display: flex;
-    align-items: center;
-    gap: var(--space-xs);
-    margin-bottom: var(--space-sm);
-    color: var(--primary-light);
-    font-size: 0.95rem;
-}
-
-.etalase-hobby i {
-    color: var(--accent-gold);
-}
-
-.etalase-bio {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: var(--primary-light);
-    margin-bottom: var(--space-md);
-    font-style: italic;
-}
-
-/* Instagram Button */
-.instagram-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    padding: 12px;
-    background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-family: 'Crimson Text', serif;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s var(--transition-smooth);
-    text-decoration: none;
-}
-
-.instagram-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(193, 53, 132, 0.3);
-    filter: brightness(1.1);
-}
-
-.instagram-btn:active {
-    transform: translateY(0);
-}
-
-/* Carousel Navigation */
-.carousel-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: var(--neutral-white);
-    border: 2px solid var(--accent-sand);
-    color: var(--primary-light);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    transition: all 0.3s var(--transition-smooth);
-    z-index: 10;
-    box-shadow: var(--shadow-subtle);
-}
-
-.carousel-nav:hover {
-    background: var(--accent-gold);
-    color: var(--neutral-white);
-    border-color: var(--accent-gold);
-    transform: translateY(-50%) scale(1.1);
-}
-
-.carousel-nav.prev {
-    left: 20px;
-}
-
-.carousel-nav.next {
-    right: 20px;
-}
-
-/* Carousel Indicators */
-.carousel-indicators {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: var(--space-lg);
-}
-
-.indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--accent-sand);
-    cursor: pointer;
-    transition: all 0.3s var(--transition-smooth);
-}
-
-.indicator.active {
-    background: var(--accent-gold);
-    transform: scale(1.3);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .etalase-card {
-        flex: 0 0 280px;
-    }
-    
-    .carousel-nav {
-        width: 40px;
-        height: 40px;
-        font-size: 1rem;
-    }
-    
-    .carousel-nav.prev {
-        left: 10px;
-    }
-    
-    .carousel-nav.next {
-        right: 10px;
-    }
-    
-    .etalase-image-container {
-        height: 200px;
-    }
-}
-
-@media (max-width: 480px) {
-    .etalase-card {
-        flex: 0 0 250px;
-    }
-    
-    .carousel-track {
-        gap: var(--space-sm);
-        padding: 0 var(--space-sm);
-    }
-}
-
-        /* Efek blinking untuk tombol play */
-.player-btn.blink {
-    animation: blinkEffect 0.8s ease infinite alternate;
-    box-shadow: 0 0 0 2px var(--accent-gold);
-}
-
-@keyframes blinkEffect {
-    from {
-        transform: scale(1);
-        box-shadow: 0 0 0 2px var(--accent-gold);
-    }
-    to {
-        transform: scale(1.1);
-        box-shadow: 0 0 0 4px var(--accent-gold),
-                    0 0 20px var(--accent-gold);
-    }
-}
-
-/* Pastikan music player selalu terlihat */
-.music-player.show {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-/* Tambah tooltip */
-.player-btn {
-    position: relative;
-}
-
-.player-btn::after {
-    content: attr(title);
-    position: absolute;
-    bottom: -35px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-}
-
-.player-btn:hover::after {
-    opacity: 1;
-}
         /* ========== CSS RESET & VARIABLES ========== */
         :root {
             /* Color Palette - Premium Magazine */
@@ -498,64 +197,47 @@
             background: rgba(212, 175, 55, 0.1);
         }
 
-        /* ========== HERO SECTION - DENGAN BACKGROUND FOTO ========== */
-        /* ========== HERO SECTION - DENGAN BACKGROUND FOTO TERANG ========== */
-.hero-section {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: calc(var(--space-xl) * 2) var(--space-md) var(--space-xl);
-    position: relative;
-    overflow: hidden;
-    background: 
-        /* Overlay SANGAT transparan - kurangi opacity */
-        linear-gradient(rgba(44, 24, 16, 0.4), rgba(44, 24, 16, 0.6)),
-        /* Background foto */
-        url('images/2023/buk.jpeg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-}
+        /* ========== HERO SECTION ========== */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: calc(var(--space-xl) * 2) var(--space-md) var(--space-xl);
+            position: relative;
+            overflow: hidden;
+            background: 
+                linear-gradient(rgba(44, 24, 16, 0.4), rgba(44, 24, 16, 0.6)),
+                url('images/2023/buk.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
 
-/* Overlay yang lebih terang */
-.hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* Gradient yang lebih terang */
-    background: linear-gradient(
-        to bottom,
-        rgba(44, 24, 16, 0.3),  /* Dari 0.7 jadi 0.3 */
-        rgba(44, 24, 16, 0.5)   /* Dari 0.85 jadi 0.5 */
-    );
-    z-index: 1;
-}
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(44, 24, 16, 0.3),
+                rgba(44, 24, 16, 0.5)
+            );
+            z-index: 1;
+        }
 
-.hero-content {
-    max-width: 800px;
-    text-align: center;
-    position: relative;
-    z-index: 3;
-    color: var(--neutral-white);
-    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4); /* Shadow lebih tebal */
-}
-
-/* Tambah blur sedikit di background */
-.hero-section::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(0px); /* Optional: tambah blur halus */
-    z-index: 1;
-}
+        .hero-content {
+            max-width: 800px;
+            text-align: center;
+            position: relative;
+            z-index: 3;
+            color: var(--neutral-white);
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+        }
 
         .hero-title {
             margin-bottom: var(--space-md);
@@ -602,13 +284,252 @@
             animation: bounce 2s infinite var(--transition-bounce);
         }
 
-        /* Responsive untuk background */
-        @media (max-width: 768px) {
-            .hero-section {
-                background-attachment: scroll;
-                background-size: cover;
-                background-position: center 30%;
-            }
+        /* ========== ETALASE FOTO - CAROUSEL ========== */
+        .etalase-section {
+            padding: var(--space-xl) var(--space-md);
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            background: linear-gradient(to bottom, rgba(232, 220, 204, 0.1), transparent);
+        }
+
+        .etalase-header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+        }
+
+        .etalase-subtitle {
+            max-width: 600px;
+            margin: 0 auto;
+            color: var(--primary-light);
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+        /* Carousel Container dengan Bingkai */
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            background: var(--neutral-white);
+            padding: var(--space-lg);
+            box-shadow: 
+                0 10px 40px rgba(44, 24, 16, 0.1),
+                inset 0 0 0 1px rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--accent-sand);
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s var(--transition-smooth);
+            gap: var(--space-md);
+            padding: 10px 0;
+        }
+
+        /* Etalase Card dengan Bingkai */
+        .etalase-card {
+            flex: 0 0 320px;
+            background: var(--neutral-white);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.4s var(--transition-smooth);
+            position: relative;
+            cursor: pointer;
+            border: 2px solid transparent;
+            box-shadow: 0 5px 20px rgba(44, 24, 16, 0.08);
+        }
+
+        .etalase-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-gold);
+            box-shadow: 
+                0 15px 40px rgba(212, 175, 55, 0.15),
+                0 0 0 1px var(--accent-gold);
+        }
+
+        .etalase-card:hover .etalase-image {
+            transform: scale(1.05);
+        }
+
+        /* Frame untuk foto */
+        .etalase-image-container {
+            height: 280px;
+            overflow: hidden;
+            position: relative;
+            border-bottom: 2px solid var(--accent-sand);
+        }
+
+        .etalase-image-container::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 8px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .etalase-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s var(--transition-smooth);
+        }
+
+        .etalase-info {
+            padding: var(--space-lg);
+            position: relative;
+        }
+
+        .etalase-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: var(--space-xs);
+            position: relative;
+            display: inline-block;
+        }
+
+        .etalase-name::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-gold), transparent);
+        }
+
+        .etalase-title {
+            font-size: 0.9rem;
+            color: var(--accent-gold);
+            font-weight: 500;
+            margin-bottom: var(--space-sm);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .etalase-hobby {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            margin-bottom: var(--space-sm);
+            color: var(--primary-light);
+            font-size: 0.95rem;
+            padding: 8px 12px;
+            background: rgba(232, 220, 204, 0.1);
+            border-radius: 6px;
+            border-left: 3px solid var(--accent-gold);
+        }
+
+        .etalase-hobby i {
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+        }
+
+        .etalase-bio {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--primary-light);
+            margin-bottom: var(--space-lg);
+            font-style: italic;
+            padding-left: 12px;
+            border-left: 2px solid var(--accent-sand);
+        }
+
+        /* Instagram Button */
+        .instagram-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Crimson Text', serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(193, 53, 132, 0.2);
+        }
+
+        .instagram-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(193, 53, 132, 0.3);
+            filter: brightness(1.1);
+        }
+
+        .instagram-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Carousel Navigation */
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--neutral-white);
+            border: 2px solid var(--accent-gold);
+            color: var(--accent-gold);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s var(--transition-smooth);
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(44, 24, 16, 0.1);
+        }
+
+        .carousel-nav:hover {
+            background: var(--accent-gold);
+            color: var(--neutral-white);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .carousel-nav.prev {
+            left: -25px;
+        }
+
+        .carousel-nav.next {
+            right: -25px;
+        }
+
+        /* Carousel Indicators */
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: var(--space-lg);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--accent-sand);
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-sand);
+            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .indicator.active {
+            background: var(--accent-gold);
+            transform: scale(1.3);
         }
 
         /* ========== MASONRY GALLERY LAYOUT ========== */
@@ -826,6 +747,52 @@
         @keyframes barPulse {
             from { height: 5px; }
             to { height: 25px; }
+        }
+
+        /* Efek blinking untuk tombol play */
+        .player-btn.blink {
+            animation: blinkEffect 0.8s ease infinite alternate;
+            box-shadow: 0 0 0 2px var(--accent-gold);
+        }
+
+        @keyframes blinkEffect {
+            from {
+                transform: scale(1);
+                box-shadow: 0 0 0 2px var(--accent-gold);
+            }
+            to {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 4px var(--accent-gold),
+                            0 0 20px var(--accent-gold);
+            }
+        }
+
+        /* Pastikan music player selalu terlihat */
+        .music-player.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Tambah tooltip */
+        .player-btn::after {
+            content: attr(title);
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .player-btn:hover::after {
+            opacity: 1;
         }
 
         /* ========== PREMIUM LIGHTBOX ========== */
@@ -1052,6 +1019,60 @@
             .lightbox-next {
                 right: 10px;
             }
+
+            /* Responsive Etalase */
+            .etalase-card {
+                flex: 0 0 280px;
+            }
+            
+            .carousel-nav {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .carousel-nav.prev {
+                left: 10px;
+            }
+            
+            .carousel-nav.next {
+                right: 10px;
+            }
+            
+            .etalase-image-container {
+                height: 220px;
+            }
+
+            .carousel-container {
+                padding: var(--space-md);
+            }
+
+            .etalase-info {
+                padding: var(--space-md);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .etalase-card {
+                flex: 0 0 260px;
+            }
+            
+            .carousel-track {
+                gap: var(--space-sm);
+                padding: 0 var(--space-sm);
+            }
+            
+            .etalase-image-container {
+                height: 200px;
+            }
+
+            .etalase-name {
+                font-size: 1.3rem;
+            }
+
+            .etalase-bio {
+                font-size: 0.9rem;
+            }
         }
 
         /* ========== FOOTER ========== */
@@ -1116,7 +1137,6 @@
 
     <!-- HERO SECTION -->
     <section id="home" class="hero-section">
-        <div class="hero-bg-pattern"></div>
         <div class="hero-content">
             <h1 class="hero-title">IPS 3 Memory Archive</h1>
             <p class="text-lead hero-subtitle">Sebuah perjalanan visual melalui kenangan, tawa, dan momen yang tak terlupakan. Setiap foto adalah cerita, setiap cerita adalah kenangan abadi.</p>
@@ -1129,144 +1149,144 @@
         </div>
     </section>
 
-    <!-- Tambahkan tepat SEBELUM section 2022 -->
-<section class="etalase-section">
-    <div class="section-header etalase-header">
-        <h2>Galeri Anggota IPS 3</h2>
-        <p class="text-lead etalase-subtitle">Kenali lebih dekat teman-teman kelas, impian mereka, dan cerita di balik senyuman.</p>
-    </div>
-    
-    <div class="carousel-container">
-        <button class="carousel-nav prev">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        
-        <button class="carousel-nav next">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-        
-        <div class="carousel-track" id="etalaseTrack">
-            <!-- Anggota 1 -->
-            <div class="etalase-card">
-                <div class="etalase-image-container">
-                    <img src="images/2022/contoh.jpeg" alt="Ahmad Rizki" class="etalase-image">
-                </div>
-                <div class="etalase-info">
-                    <h3 class="etalase-name">payd</h3>
-                    <p class="etalase-title">Ketua Kelas IPS 3</p>
-                    
-                    <div class="etalase-hobby">
-                        <i class="fas fa-book"></i>
-                        <span>Tech Enthusiast</span>
-                    </div>
-                    
-                    <p class="etalase-bio">"Percaya bahwa setiap momen memiliki cerita. Senang mengabadikan keindahan dalam frame dan kata-kata."</p>
-                    
-                    <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
-                        <i class="fab fa-instagram"></i>
-                        <span>Follow on Instagram</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Anggota 2 -->
-            <div class="etalase-card">
-                <div class="etalase-image-container">
-                    <img src="images/2022/kacamata.jpeg" alt="Siti Aisyah" class="etalase-image">
-                </div>
-                <div class="etalase-info">
-                    <h3 class="etalase-name">Siti Aisyah</h3>
-                    <p class="etalase-title">Bendahara & Aktivis</p>
-                    
-                    <div class="etalase-hobby">
-                        <i class="fas fa-paint-brush"></i>
-                        <span>Seni & Lingkungan</span>
-                    </div>
-                    
-                    <p class="etalase-bio">"Seni adalah cara saya memahami dunia. Aktif dalam kegiatan lingkungan dan seni visual."</p>
-                    
-                    <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
-                        <i class="fab fa-instagram"></i>
-                        <span>Follow on Instagram</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Anggota 3 -->
-            <div class="etalase-card">
-                <div class="etalase-image-container">
-                    <img src="images/2022/kacamata.jpeg" alt="Budi Santoso" class="etalase-image">
-                </div>
-                <div class="etalase-info">
-                    <h3 class="etalase-name">Budi Santoso</h3>
-                    <p class="etalase-title">Atlet & Organisator</p>
-                    
-                    <div class="etalase-hobby">
-                        <i class="fas fa-futbol"></i>
-                        <span>Olahraga & Musik</span>
-                    </div>
-                    
-                    <p class="etalase-bio">"Energi positif datang dari gerak dan irama. Tim futsal sekolah dan pemain bass band."</p>
-                    
-                    <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
-                        <i class="fab fa-instagram"></i>
-                        <span>Follow on Instagram</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Anggota 4 -->
-            <div class="etalase-card">
-                <div class="etalase-image-container">
-                    <img src="images/2022/kacamata.jpeg" alt="Maya Putri" class="etalase-image">
-                </div>
-                <div class="etalase-info">
-                    <h3 class="etalase-name">Maya Putri</h3>
-                    <p class="etalase-title">Penulis & Debat</p>
-                    
-                    <div class="etalase-hobby">
-                        <i class="fas fa-pen-fancy"></i>
-                        <span>Menulis & Debat</span>
-                    </div>
-                    
-                    <p class="etalase-bio">"Kata-kata adalah senjata terbaik. Juara lomba debat se-provinsi dan penulis puisi."</p>
-                    
-                    <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
-                        <i class="fab fa-instagram"></i>
-                        <span>Follow on Instagram</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Anggota 5 -->
-            <div class="etalase-card">
-                <div class="etalase-image-container">
-                    <img src="images/2022/kacamata.jpeg" alt="Rizky Pratama" class="etalase-image">
-                </div>
-                <div class="etalase-info">
-                    <h3 class="etalase-name">Rizky Pratama</h3>
-                    <p class="etalase-title">Tech Enthusiast</p>
-                    
-                    <div class="etalase-hobby">
-                        <i class="fas fa-laptop-code"></i>
-                        <span>Teknologi & Robotika</span>
-                    </div>
-                    
-                    <p class="etalase-bio">"Masa depan ada di teknologi. Pernah membuat robot sederhana dan aktif di klub programming."</p>
-                    
-                    <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
-                        <i class="fab fa-instagram"></i>
-                        <span>Follow on Instagram</span>
-                    </a>
-                </div>
-            </div>
+    <!-- ETALASE SECTION -->
+    <section class="etalase-section">
+        <div class="section-header etalase-header">
+            <h2>Galeri Anggota IPS 3</h2>
+            <p class="text-lead etalase-subtitle">Kenali lebih dekat teman-teman kelas, impian mereka, dan cerita di balik senyuman.</p>
         </div>
         
-        <div class="carousel-indicators" id="etalaseIndicators">
-            <!-- Indicators akan di-generate oleh JavaScript -->
+        <div class="carousel-container">
+            <button class="carousel-nav prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <button class="carousel-nav next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <div class="carousel-track" id="etalaseTrack">
+                <!-- Anggota 1 -->
+                <div class="etalase-card">
+                    <div class="etalase-image-container">
+                        <img src="images/2022/contoh.jpeg" alt="Ahmad Rizki" class="etalase-image">
+                    </div>
+                    <div class="etalase-info">
+                        <h3 class="etalase-name">payd</h3>
+                        <p class="etalase-title">Ketua Kelas IPS 3</p>
+                        
+                        <div class="etalase-hobby">
+                            <i class="fas fa-book"></i>
+                            <span>Tech Enthusiast</span>
+                        </div>
+                        
+                        <p class="etalase-bio">"Percaya bahwa setiap momen memiliki cerita. Senang mengabadikan keindahan dalam frame dan kata-kata."</p>
+                        
+                        <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
+                            <i class="fab fa-instagram"></i>
+                            <span>Follow on Instagram</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Anggota 2 -->
+                <div class="etalase-card">
+                    <div class="etalase-image-container">
+                        <img src="images/2022/kacamata.jpeg" alt="Siti Aisyah" class="etalase-image">
+                    </div>
+                    <div class="etalase-info">
+                        <h3 class="etalase-name">Siti Aisyah</h3>
+                        <p class="etalase-title">Bendahara & Aktivis</p>
+                        
+                        <div class="etalase-hobby">
+                            <i class="fas fa-paint-brush"></i>
+                            <span>Seni & Lingkungan</span>
+                        </div>
+                        
+                        <p class="etalase-bio">"Seni adalah cara saya memahami dunia. Aktif dalam kegiatan lingkungan dan seni visual."</p>
+                        
+                        <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
+                            <i class="fab fa-instagram"></i>
+                            <span>Follow on Instagram</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Anggota 3 -->
+                <div class="etalase-card">
+                    <div class="etalase-image-container">
+                        <img src="images/2022/kacamata.jpeg" alt="Budi Santoso" class="etalase-image">
+                    </div>
+                    <div class="etalase-info">
+                        <h3 class="etalase-name">Budi Santoso</h3>
+                        <p class="etalase-title">Atlet & Organisator</p>
+                        
+                        <div class="etalase-hobby">
+                            <i class="fas fa-futbol"></i>
+                            <span>Olahraga & Musik</span>
+                        </div>
+                        
+                        <p class="etalase-bio">"Energi positif datang dari gerak dan irama. Tim futsal sekolah dan pemain bass band."</p>
+                        
+                        <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
+                            <i class="fab fa-instagram"></i>
+                            <span>Follow on Instagram</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Anggota 4 -->
+                <div class="etalase-card">
+                    <div class="etalase-image-container">
+                        <img src="images/2022/kacamata.jpeg" alt="Maya Putri" class="etalase-image">
+                    </div>
+                    <div class="etalase-info">
+                        <h3 class="etalase-name">Maya Putri</h3>
+                        <p class="etalase-title">Penulis & Debat</p>
+                        
+                        <div class="etalase-hobby">
+                            <i class="fas fa-pen-fancy"></i>
+                            <span>Menulis & Debat</span>
+                        </div>
+                        
+                        <p class="etalase-bio">"Kata-kata adalah senjata terbaik. Juara lomba debat se-provinsi dan penulis puisi."</p>
+                        
+                        <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
+                            <i class="fab fa-instagram"></i>
+                            <span>Follow on Instagram</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Anggota 5 -->
+                <div class="etalase-card">
+                    <div class="etalase-image-container">
+                        <img src="images/2022/kacamata.jpeg" alt="Rizky Pratama" class="etalase-image">
+                    </div>
+                    <div class="etalase-info">
+                        <h3 class="etalase-name">Rizky Pratama</h3>
+                        <p class="etalase-title">Tech Enthusiast</p>
+                        
+                        <div class="etalase-hobby">
+                            <i class="fas fa-laptop-code"></i>
+                            <span>Teknologi & Robotika</span>
+                        </div>
+                        
+                        <p class="etalase-bio">"Masa depan ada di teknologi. Pernah membuat robot sederhana dan aktif di klub programming."</p>
+                        
+                        <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
+                            <i class="fab fa-instagram"></i>
+                            <span>Follow on Instagram</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="carousel-indicators" id="etalaseIndicators">
+                <!-- Indicators akan di-generate oleh JavaScript -->
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- 2022 SECTION -->
     <section id="year-2022" class="memory-section">
@@ -1425,163 +1445,6 @@
     </div>
 
     <script>
-
-        // ================= ETALASE CAROUSEL SYSTEM =================
-class EtalaseCarousel {
-    constructor() {
-        this.track = document.getElementById('etalaseTrack');
-        this.cards = document.querySelectorAll('.etalase-card');
-        this.prevBtn = document.querySelector('.carousel-nav.prev');
-        this.nextBtn = document.querySelector('.carousel-nav.next');
-        this.indicatorsContainer = document.getElementById('etalaseIndicators');
-        
-        this.currentIndex = 0;
-        this.cardWidth = 300; // Sesuai dengan flex-basis di CSS
-        this.gap = 32; // Sesuai dengan gap di CSS
-        this.totalCards = this.cards.length;
-        
-        this.init();
-    }
-
-    init() {
-        this.createIndicators();
-        this.setupEventListeners();
-        this.setupAutoSlide();
-        this.updateCarousel();
-        
-        // Auto-detect card width untuk responsive
-        this.updateCardWidth();
-        window.addEventListener('resize', () => this.updateCardWidth());
-    }
-
-    updateCardWidth() {
-        if (this.cards[0]) {
-            const cardStyle = window.getComputedStyle(this.cards[0]);
-            this.cardWidth = this.cards[0].offsetWidth;
-            this.gap = parseInt(cardStyle.marginRight) || 32;
-            this.updateCarousel();
-        }
-    }
-
-    createIndicators() {
-        for (let i = 0; i < this.totalCards; i++) {
-            const indicator = document.createElement('div');
-            indicator.className = 'indicator';
-            if (i === 0) indicator.classList.add('active');
-            
-            indicator.addEventListener('click', () => {
-                this.goToSlide(i);
-            });
-            
-            this.indicatorsContainer.appendChild(indicator);
-        }
-    }
-
-    setupEventListeners() {
-        this.prevBtn.addEventListener('click', () => this.prevSlide());
-        this.nextBtn.addEventListener('click', () => this.nextSlide());
-        
-        // Swipe gestures untuk mobile
-        this.setupSwipeGestures();
-    }
-
-    setupSwipeGestures() {
-        let startX = 0;
-        let endX = 0;
-        
-        this.track.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-        }, { passive: true });
-        
-        this.track.addEventListener('touchend', (e) => {
-            endX = e.changedTouches[0].clientX;
-            const swipeDistance = endX - startX;
-            
-            if (Math.abs(swipeDistance) > 50) {
-                if (swipeDistance > 0) {
-                    this.prevSlide();
-                } else {
-                    this.nextSlide();
-                }
-            }
-        }, { passive: true });
-    }
-
-    setupAutoSlide() {
-        // Auto slide setiap 5 detik
-        setInterval(() => {
-            this.nextSlide();
-        }, 5000);
-    }
-
-    nextSlide() {
-        this.currentIndex = (this.currentIndex + 1) % this.totalCards;
-        this.updateCarousel();
-    }
-
-    prevSlide() {
-        this.currentIndex = (this.currentIndex - 1 + this.totalCards) % this.totalCards;
-        this.updateCarousel();
-    }
-
-    goToSlide(index) {
-        this.currentIndex = index;
-        this.updateCarousel();
-    }
-
-    updateCarousel() {
-        const translateX = -(this.currentIndex * (this.cardWidth + this.gap));
-        this.track.style.transform = `translateX(${translateX}px)`;
-        
-        // Update indicators
-        document.querySelectorAll('.indicator').forEach((indicator, index) => {
-            indicator.classList.toggle('active', index === this.currentIndex);
-        });
-    }
-}
-
-// ================= DATA ANGGOTA (OPTIONAL) =================
-// Jika ingin membuat dinamis dari array JavaScript
-const anggotaData = [
-    {
-        nama: "Ahmad Rizki",
-        title: "Ketua Kelas IPS 3",
-        hobi: "Filsafat & Fotografi",
-        bio: "Percaya bahwa setiap momen memiliki cerita. Senang mengabadikan keindahan dalam frame dan kata-kata.",
-        instagram: "https://instagram.com/ahmad.rizki",
-        foto: "images/anggota/anggota1.jpg"
-    },
-    {
-        nama: "Siti Aisyah",
-        title: "Bendahara & Aktivis",
-        hobi: "Seni & Lingkungan",
-        bio: "Seni adalah cara saya memahami dunia. Aktif dalam kegiatan lingkungan dan seni visual.",
-        instagram: "https://instagram.com/siti.aisyah",
-        foto: "images/anggota/anggota2.jpg"
-    },
-    {
-        nama: "Budi Santoso",
-        title: "Atlet & Organisator",
-        hobi: "Olahraga & Musik",
-        bio: "Energi positif datang dari gerak dan irama. Tim futsal sekolah dan pemain bass band.",
-        instagram: "https://instagram.com/budi.santoso",
-        foto: "images/anggota/anggota3.jpg"
-    }
-    // Tambahkan data anggota lainnya...
-];
-
-// ================= UPDATE INITIALIZATION =================
-// Update kode initialization di bagian bawah file
-document.addEventListener('DOMContentLoaded', () => {
-    // Initialize systems
-    const masonryGallery = new MasonryGallery();
-    const musicPlayer = new MusicPlayer();
-    const navigation = new Navigation();
-    const confettiSystem = new ConfettiSystem();
-    const etalaseCarousel = new EtalaseCarousel(); // Tambahkan ini
-    
-    // ... kode lainnya tetap sama ...
-});
         // ================= GALLERY DATA =================
         const galleryData = {
             '2022': [
@@ -1600,7 +1463,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 {
                     id: '2022-3',
                     src: 'images/2023/WhatsApp Image 2025-12-23 at 10.11.48.jpeg',
-                    caption: 'Berenang bersama - Aktivitas outdoor yang penuh tawa dan canda.',
+                    caption: 'Berenang bersama - yang penuh tawa dan canda + bonceng crush.',
                     alt: 'Berenang'
                 },
                 {
@@ -1690,11 +1553,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.observer = new IntersectionObserver((entries) => {
                     entries.forEach((entry, index) => {
                         if (entry.isIntersecting) {
-                            // Staggered animation with delay
                             setTimeout(() => {
                                 entry.target.classList.add('animated');
                             }, index * 150);
-                            
                             this.observer.unobserve(entry.target);
                         }
                     });
@@ -1714,7 +1575,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         const tapLength = currentTime - lastTap;
                         
                         if (tapLength < 300 && tapLength > 0) {
-                            // Double tap detected
                             this.showHeartAnimation(item, e);
                             this.vibrate();
                             lastTap = 0;
@@ -1729,7 +1589,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const heart = item.querySelector('.heart-overlay');
                 if (!heart) return;
                 
-                // Calculate position based on click/tap
                 const rect = item.getBoundingClientRect();
                 const x = event.clientX - rect.left;
                 const y = event.clientY - rect.top;
@@ -1751,9 +1610,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 this.galleryItems.forEach(item => {
                     item.addEventListener('click', (e) => {
-                        // Check if it's a double tap first
                         if (e.detail === 2) return;
-                        
                         const itemId = item.dataset.id;
                         this.openLightbox(itemId);
                     });
@@ -1765,7 +1622,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const lightboxImage = document.getElementById('lightboxImage');
                 const lightboxCaption = document.getElementById('lightboxCaption');
                 
-                // Find image data
                 for (const year in galleryData) {
                     const image = galleryData[year].find(img => img.id === itemId);
                     if (image) {
@@ -1773,19 +1629,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         lightboxImage.alt = image.alt;
                         lightboxCaption.textContent = image.caption;
                         
-                        // Store current image info
                         this.currentImage = image;
                         this.currentYear = year;
                         this.currentIndex = galleryData[year].findIndex(img => img.id === itemId);
-                        
                         break;
                     }
                 }
                 
                 lightbox.classList.add('active');
                 document.body.style.overflow = 'hidden';
-                
-                // Setup swipe gestures
                 this.setupSwipeGestures();
             }
 
@@ -1820,7 +1672,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             nextImage() {
                 if (!this.currentYear || this.currentIndex === undefined) return;
-                
                 const yearImages = galleryData[this.currentYear];
                 this.currentIndex = (this.currentIndex + 1) % yearImages.length;
                 this.updateLightboxContent(yearImages[this.currentIndex]);
@@ -1828,7 +1679,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             prevImage() {
                 if (!this.currentYear || this.currentIndex === undefined) return;
-                
                 const yearImages = galleryData[this.currentYear];
                 this.currentIndex = (this.currentIndex - 1 + yearImages.length) % yearImages.length;
                 this.updateLightboxContent(yearImages[this.currentIndex]);
@@ -1854,7 +1704,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             optimizeImages() {
-                // Lazy loading optimization
                 const images = document.querySelectorAll('.memory-image');
                 images.forEach(img => {
                     img.loading = 'lazy';
@@ -1863,7 +1712,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             vibrate() {
-                // Haptic feedback for mobile
                 if (navigator.vibrate) {
                     navigator.vibrate(50);
                 }
@@ -1871,191 +1719,137 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // ================= MUSIC PLAYER & VISUALIZER =================
-        // ================= MUSIC PLAYER & VISUALIZER =================
-class MusicPlayer {
-    constructor() {
-        this.player = document.getElementById('musicPlayer');
-        this.playBtn = document.getElementById('playBtn');
-        this.visualizer = document.getElementById('visualizer');
-        this.bars = this.visualizer.querySelectorAll('.bar');
-        
-        this.audio = new Audio('music/backsound.mp3');
-        this.audio.loop = true;
-        this.audio.volume = 0.3;
-        
-        this.isPlaying = false;
-        this.animationFrame = null;
-        
-        this.init();
-    }
-
-    init() {
-        this.setupEventListeners();
-        this.showPlayer();
-        this.attemptAutoplay(); // Coba autoplay
-    }
-
-    setupEventListeners() {
-        this.playBtn.addEventListener('click', () => this.togglePlay());
-        
-        this.audio.addEventListener('play', () => {
-            this.isPlaying = true;
-            this.updatePlayButton();
-            this.startVisualizer();
-        });
-        
-        this.audio.addEventListener('pause', () => {
-            this.isPlaying = false;
-            this.updatePlayButton();
-            this.stopVisualizer();
-        });
-        
-        // Pause saat tab tidak aktif (hemat baterai)
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden && this.isPlaying) {
-                this.audio.pause();
-            } else if (!document.hidden && this.isPlaying) {
-                this.audio.play().catch(console.error);
+        class MusicPlayer {
+            constructor() {
+                this.player = document.getElementById('musicPlayer');
+                this.playBtn = document.getElementById('playBtn');
+                this.visualizer = document.getElementById('visualizer');
+                this.bars = this.visualizer.querySelectorAll('.bar');
+                
+                // Cek apakah audio sudah ada sebelumnya
+                this.audio = document.querySelector('audio');
+                if (!this.audio) {
+                    this.audio = new Audio();
+                    this.audio.loop = true;
+                    this.audio.volume = 0.3;
+                }
+                
+                this.isPlaying = false;
+                this.animationFrame = null;
+                this.hasInteracted = false; // Flag untuk interaksi user
+                
+                this.init();
             }
-        });
-    }
 
-    // Update tombol play/pause
-    updatePlayButton() {
-        if (this.isPlaying) {
-            this.playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            this.playBtn.classList.add('play-active');
-            this.playBtn.title = 'Pause Musik';
-        } else {
-            this.playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            this.playBtn.classList.remove('play-active');
-            this.playBtn.title = 'Play Musik';
-        }
-    }
+            init() {
+                this.setupEventListeners();
+                this.showPlayer();
+                // TIDAK otomatis play
+            }
 
-    // Coba autoplay dengan user interaction
-    attemptAutoplay() {
-        const tryPlay = () => {
-            this.audio.play()
-                .then(() => {
-                    console.log('Musik autoplay berhasil');
+            setupEventListeners() {
+                this.playBtn.addEventListener('click', () => this.togglePlay());
+                
+                this.audio.addEventListener('play', () => {
                     this.isPlaying = true;
                     this.updatePlayButton();
-                })
-                .catch(error => {
-                    console.log('Autoplay diblokir, butuh interaksi user:', error);
-                    // Tampilkan indikator bahwa musik ready
-                    this.showReadyIndicator();
+                    this.startVisualizer();
                 });
-        };
-
-        // Coba autoplay langsung
-        setTimeout(() => {
-            tryPlay();
-        }, 1000);
-
-        // Setup interaksi untuk trigger autoplay
-        this.setupAutoplayTriggers();
-    }
-
-    // Setup trigger untuk autoplay setelah interaksi user
-    setupAutoplayTriggers() {
-        const playOnInteraction = () => {
-            if (!this.isPlaying) {
-                this.audio.play()
-                    .then(() => {
-                        this.isPlaying = true;
-                        this.updatePlayButton();
-                    })
-                    .catch(console.error);
-            }
-        };
-
-        // Trigger autoplay pada berbagai interaksi
-        const interactions = ['click', 'touchstart', 'keydown', 'scroll'];
-        interactions.forEach(eventType => {
-            document.addEventListener(eventType, playOnInteraction, { once: true });
-        });
-
-        // Juga trigger pada tombol play
-        this.playBtn.addEventListener('click', playOnInteraction);
-    }
-
-    // Tampilkan indikator musik siap
-    showReadyIndicator() {
-        // Tambah efek berkedip pada tombol play
-        const blinkInterval = setInterval(() => {
-            this.playBtn.classList.toggle('blink');
-        }, 800);
-
-        // Hentikan blinking setelah 5 detik
-        setTimeout(() => {
-            clearInterval(blinkInterval);
-            this.playBtn.classList.remove('blink');
-        }, 5000);
-    }
-
-    showPlayer() {
-        setTimeout(() => {
-            this.player.classList.add('show');
-        }, 2000);
-    }
-
-    togglePlay() {
-        if (this.isPlaying) {
-            this.pause();
-        } else {
-            this.play();
-        }
-    }
-
-    play() {
-        this.audio.play().catch(e => {
-            console.log('Error playing:', e);
-            // Jika gagal, coba dengan volume 0
-            this.audio.volume = 0;
-            this.audio.play()
-                .then(() => {
-                    // Setelah berhasil, naikkan volume
-                    setTimeout(() => {
-                        this.audio.volume = 0.3;
-                    }, 100);
-                })
-                .catch(console.error);
-        });
-    }
-
-    pause() {
-        this.audio.pause();
-    }
-
-    startVisualizer() {
-        const updateBars = () => {
-            this.bars.forEach((bar, index) => {
-                const height = 5 + Math.random() * 20;
-                bar.style.height = `${height}px`;
                 
-                const delay = Math.random() * 0.3;
-                bar.style.animationDelay = `${delay}s`;
-            });
-            
-            this.animationFrame = requestAnimationFrame(updateBars);
-        };
-        
-        updateBars();
-    }
+                this.audio.addEventListener('pause', () => {
+                    this.isPlaying = false;
+                    this.updatePlayButton();
+                    this.stopVisualizer();
+                });
+                
+                // Hanya load audio, tidak play otomatis
+                this.audio.src = 'music/backsound.mp3';
+                this.audio.load();
+                
+                // Pause saat tab tidak aktif
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden && this.isPlaying) {
+                        this.audio.pause();
+                    }
+                });
+            }
 
-    stopVisualizer() {
-        if (this.animationFrame) {
-            cancelAnimationFrame(this.animationFrame);
-            this.animationFrame = null;
+            updatePlayButton() {
+                if (this.isPlaying) {
+                    this.playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    this.playBtn.classList.add('play-active');
+                    this.playBtn.title = 'Pause Musik';
+                } else {
+                    this.playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    this.playBtn.classList.remove('play-active');
+                    this.playBtn.title = 'Play Musik';
+                }
+            }
+
+            showPlayer() {
+                setTimeout(() => {
+                    this.player.classList.add('show');
+                }, 2000);
+            }
+
+            togglePlay() {
+                this.hasInteracted = true; // Tandai bahwa user sudah interaksi
+                if (this.isPlaying) {
+                    this.pause();
+                } else {
+                    this.play();
+                }
+            }
+
+            play() {
+                // Pastikan audio source sudah benar
+                if (this.audio.src === '' || !this.audio.src.includes('backsound.mp3')) {
+                    this.audio.src = 'music/backsound.mp3';
+                }
+                
+                // Pastikan hanya ada satu instance yang play
+                this.audio.currentTime = 0;
+                this.audio.play().catch(e => {
+                    console.log('Error playing:', e);
+                    // Jika gagal, coba dengan volume 0
+                    this.audio.volume = 0;
+                    this.audio.play()
+                        .then(() => {
+                            setTimeout(() => {
+                                this.audio.volume = 0.3;
+                            }, 100);
+                        })
+                        .catch(console.error);
+                });
+            }
+
+            pause() {
+                this.audio.pause();
+            }
+
+            startVisualizer() {
+                const updateBars = () => {
+                    this.bars.forEach((bar, index) => {
+                        const height = 5 + Math.random() * 20;
+                        bar.style.height = `${height}px`;
+                        const delay = Math.random() * 0.3;
+                        bar.style.animationDelay = `${delay}s`;
+                    });
+                    this.animationFrame = requestAnimationFrame(updateBars);
+                };
+                updateBars();
+            }
+
+            stopVisualizer() {
+                if (this.animationFrame) {
+                    cancelAnimationFrame(this.animationFrame);
+                    this.animationFrame = null;
+                }
+                this.bars.forEach(bar => {
+                    bar.style.height = '5px';
+                });
+            }
         }
-        
-        this.bars.forEach(bar => {
-            bar.style.height = '5px';
-        });
-    }
-}
 
         // ================= CONFETTI SYSTEM (2024 SECTION) =================
         class ConfettiSystem {
@@ -2078,7 +1872,6 @@ class MusicPlayer {
                     const confetti = document.createElement('div');
                     confetti.className = 'confetti';
                     
-                    // Random properties
                     const size = 5 + Math.random() * 10;
                     const color = `hsl(${Math.random() * 30 + 30}, 70%, 60%)`;
                     const left = Math.random() * 100;
@@ -2130,7 +1923,6 @@ class MusicPlayer {
             }
 
             triggerConfetti() {
-                // Animate confetti
                 const confetti = document.querySelectorAll('.confetti');
                 confetti.forEach((piece, index) => {
                     setTimeout(() => {
@@ -2138,25 +1930,129 @@ class MusicPlayer {
                         piece.style.top = `${100 + Math.random() * 50}vh`;
                         piece.style.transform = `rotate(${Math.random() * 720}deg)`;
                         
-                        // Fade out
                         setTimeout(() => {
                             piece.style.opacity = '0';
                         }, 2000);
                     }, index * 100);
                 });
                 
-                // Animate sparkles
                 const sparkles = document.querySelectorAll('.sparkle');
                 sparkles.forEach((sparkle, index) => {
                     setTimeout(() => {
                         sparkle.style.opacity = '0.6';
                         sparkle.style.transform = `scale(${1 + Math.random()})`;
                         
-                        // Twinkle effect
                         setTimeout(() => {
                             sparkle.style.opacity = '0';
                         }, 1000);
                     }, index * 50);
+                });
+            }
+        }
+
+        // ================= ETALASE CAROUSEL SYSTEM =================
+        class EtalaseCarousel {
+            constructor() {
+                this.track = document.getElementById('etalaseTrack');
+                this.cards = document.querySelectorAll('.etalase-card');
+                this.prevBtn = document.querySelector('.carousel-nav.prev');
+                this.nextBtn = document.querySelector('.carousel-nav.next');
+                this.indicatorsContainer = document.getElementById('etalaseIndicators');
+                
+                this.currentIndex = 0;
+                this.cardWidth = 320;
+                this.gap = 32;
+                this.totalCards = this.cards.length;
+                this.autoSlideInterval = null; // TIDAK digunakan untuk auto-slide
+                
+                this.init();
+            }
+
+            init() {
+                this.createIndicators();
+                this.setupEventListeners();
+                this.updateCarousel();
+                this.updateCardWidth();
+                window.addEventListener('resize', () => this.updateCardWidth());
+            }
+
+            updateCardWidth() {
+                if (this.cards[0]) {
+                    const cardStyle = window.getComputedStyle(this.cards[0]);
+                    this.cardWidth = this.cards[0].offsetWidth;
+                    this.gap = parseInt(cardStyle.marginRight) || 32;
+                    this.updateCarousel();
+                }
+            }
+
+            createIndicators() {
+                if (!this.indicatorsContainer) return;
+                
+                for (let i = 0; i < this.totalCards; i++) {
+                    const indicator = document.createElement('div');
+                    indicator.className = 'indicator';
+                    if (i === 0) indicator.classList.add('active');
+                    
+                    indicator.addEventListener('click', () => {
+                        this.goToSlide(i);
+                    });
+                    
+                    this.indicatorsContainer.appendChild(indicator);
+                }
+            }
+
+            setupEventListeners() {
+                if (this.prevBtn) this.prevBtn.addEventListener('click', () => this.prevSlide());
+                if (this.nextBtn) this.nextBtn.addEventListener('click', () => this.nextSlide());
+                this.setupSwipeGestures();
+            }
+
+            setupSwipeGestures() {
+                let startX = 0;
+                let endX = 0;
+                
+                this.track.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                }, { passive: true });
+                
+                this.track.addEventListener('touchend', (e) => {
+                    endX = e.changedTouches[0].clientX;
+                    const swipeDistance = endX - startX;
+                    
+                    if (Math.abs(swipeDistance) > 50) {
+                        if (swipeDistance > 0) {
+                            this.prevSlide();
+                        } else {
+                            this.nextSlide();
+                        }
+                    }
+                }, { passive: true });
+            }
+
+            nextSlide() {
+                this.currentIndex = (this.currentIndex + 1) % this.totalCards;
+                this.updateCarousel();
+            }
+
+            prevSlide() {
+                this.currentIndex = (this.currentIndex - 1 + this.totalCards) % this.totalCards;
+                this.updateCarousel();
+            }
+
+            goToSlide(index) {
+                this.currentIndex = index;
+                this.updateCarousel();
+            }
+
+            updateCarousel() {
+                if (this.cards.length === 0 || !this.track) return;
+                
+                const translateX = -(this.currentIndex * (this.cardWidth + this.gap));
+                this.track.style.transform = `translateX(${translateX}px)`;
+                
+                const indicators = document.querySelectorAll('.indicator');
+                indicators.forEach((indicator, index) => {
+                    indicator.classList.toggle('active', index === this.currentIndex);
                 });
             }
         }
@@ -2193,8 +2089,6 @@ class MusicPlayer {
 
             handleScroll() {
                 const scrollY = window.scrollY;
-                
-                // Navbar effect
                 if (scrollY > 100) {
                     this.navbar.classList.add('scrolled');
                 } else {
@@ -2268,6 +2162,7 @@ class MusicPlayer {
             const musicPlayer = new MusicPlayer();
             const navigation = new Navigation();
             const confettiSystem = new ConfettiSystem();
+            const etalaseCarousel = new EtalaseCarousel();
             
             // Setup lightbox controls
             const lightbox = document.getElementById('lightbox');
@@ -2318,14 +2213,12 @@ class MusicPlayer {
         if ('connection' in navigator) {
             const connection = navigator.connection;
             if (connection.saveData || connection.effectiveType.includes('2g')) {
-                // Reduce animations for slow connections
                 document.documentElement.style.setProperty('--transition-smooth', 'all 0.2s ease');
             }
         }
 
         // Progressive enhancement for older browsers
         if (!('IntersectionObserver' in window)) {
-            // Fallback for older browsers
             document.querySelectorAll('.memory-item').forEach(item => {
                 item.classList.add('animated');
             });
