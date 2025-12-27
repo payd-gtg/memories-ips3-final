@@ -1,0 +1,3089 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Memory Album IPS 3 | Horror Cinematic Archive</title>
+    
+    <!-- Fonts Horror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Cinzel:wght@400;700;900&family=Special+Elite&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <style>
+        /* ========== CSS RESET & HORROR VARIABLES ========== */
+        :root {
+            /* Color Palette - Horror */
+            --blood-red: #8b0000;
+            --blood-red-light: #c80000;
+            --dark-black: #0a0a0a;
+            --deep-purple: #2d0033;
+            --gunmetal: #2a3439;
+            --ash-gray: #4a4a4a;
+            --bone-white: #f5f5dc;
+            
+            /* Glow Effects */
+            --blood-glow: rgba(139, 0, 0, 0.6);
+            --blood-glow-light: rgba(200, 0, 0, 0.8);
+            
+            /* Transitions - Horror */
+            --transition-blood: cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-scary: cubic-bezier(0.7, 0, 0.3, 1);
+            
+            /* Shadows - Horror */
+            --shadow-blood: 0 0 30px var(--blood-glow);
+            --shadow-heavy: 0 10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--dark-black);
+            color: var(--bone-white);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            cursor: default;
+            opacity: 0;
+            animation: fadeInBody 2s var(--transition-blood) 3s forwards;
+        }
+
+        /* ========== THREE.JS 3D HORROR BACKGROUND ========== */
+        #three-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            pointer-events: none;
+        }
+
+        /* ========== BLOOD DRIPPING LOADING SCREEN ========== */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .blood-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .blood-drop {
+            position: absolute;
+            background: var(--blood-red);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            filter: blur(1px);
+            animation-timing-function: linear;
+            opacity: 0;
+        }
+
+        .blood-stream {
+            position: absolute;
+            background: linear-gradient(to bottom, var(--blood-red-light), var(--blood-red));
+            width: 3px;
+            border-radius: 2px;
+            animation-timing-function: ease-in;
+            opacity: 0;
+        }
+
+        .blood-pool {
+            position: absolute;
+            bottom: 0;
+            background: var(--blood-red);
+            border-radius: 50%;
+            opacity: 0;
+            filter: blur(10px);
+            animation: poolGrow 4s var(--transition-scary) forwards;
+        }
+
+        .loading-content {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+        }
+
+        .loading-title {
+            font-family: 'Creepster', cursive;
+            font-size: clamp(2rem, 8vw, 4rem);
+            color: var(--blood-red-light);
+            margin-bottom: 1.5rem;
+            text-shadow: 
+                0 0 20px var(--blood-red),
+                0 0 40px var(--blood-red),
+                0 0 60px var(--blood-red);
+            letter-spacing: 3px;
+            opacity: 0;
+            animation: titleGlitch 3s infinite alternate, fadeIn 1s var(--transition-blood) 0.5s forwards;
+        }
+
+        .loading-subtitle {
+            font-family: 'Special Elite', cursive;
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            color: var(--ash-gray);
+            margin-bottom: 3rem;
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: fadeIn 1s var(--transition-blood) 1s forwards;
+        }
+
+        .loading-progress-container {
+            width: min(300px, 80vw);
+            height: 3px;
+            background: rgba(139, 0, 0, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .loading-progress {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--blood-red), var(--blood-red-light));
+            position: relative;
+            overflow: hidden;
+            transition: width 0.3s ease;
+        }
+
+        .loading-progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: bloodShine 2s infinite;
+        }
+
+        .loading-percentage {
+            font-family: 'Special Elite', cursive;
+            font-size: 1.2rem;
+            color: var(--blood-red-light);
+            text-shadow: 0 0 10px var(--blood-red);
+            opacity: 0;
+            animation: fadeIn 1s var(--transition-blood) 1.5s forwards;
+        }
+
+        /* ========== FILM GRAIN & TEXTURE OVERLAY ========== */
+        .film-grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.05;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .scratch-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.03;
+            pointer-events: none;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.1) 2px,
+                    rgba(0, 0, 0, 0.1) 3px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.1) 2px,
+                    rgba(0, 0, 0, 0.1) 3px
+                );
+            mix-blend-mode: overlay;
+        }
+
+        /* ========== MAIN CONTENT - HORROR STYLE ========== */
+        #main-content {
+            opacity: 0;
+            transition: opacity 2s var(--transition-blood);
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            width: 100%;
+            padding: 0 1rem;
+            margin: 0 auto;
+        }
+
+        /* Mobile First Design */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 720px;
+                padding: 0 2rem;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                max-width: 960px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1140px;
+            }
+        }
+
+        /* ========== NAVIGATION - HORROR STYLE ========== */
+        .nav-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--blood-red);
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.3);
+            transform: translateY(-100%);
+            animation: navSlideDown 1s var(--transition-scary) 3.5s forwards;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Creepster', cursive;
+            font-size: 1.5rem;
+            color: var(--blood-red-light);
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--blood-red);
+            position: relative;
+            padding: 0.5rem;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--blood-red-light);
+            transition: width 0.3s var(--transition-blood);
+        }
+
+        .logo:hover::after {
+            width: 100%;
+        }
+
+        .logo span {
+            color: var(--bone-white);
+            animation: glitchText 2s infinite alternate;
+        }
+
+        .nav-years {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+            overflow-x: auto;
+            padding: 0.5rem 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .year-link {
+            font-family: 'Special Elite', cursive;
+            font-size: 0.8rem;
+            color: var(--ash-gray);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            border: 1px solid rgba(139, 0, 0, 0.3);
+            white-space: nowrap;
+            transition: all 0.3s var(--transition-blood);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .year-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 0, 0, 0.2), transparent);
+            transition: left 0.6s var(--transition-blood);
+        }
+
+        .year-link:hover::before {
+            left: 100%;
+        }
+
+        .year-link:hover,
+        .year-link.active {
+            color: var(--blood-red-light);
+            border-color: var(--blood-red);
+            background: rgba(139, 0, 0, 0.1);
+            text-shadow: 0 0 5px var(--blood-red);
+        }
+
+        /* ========== HERO SECTION - HORROR CINEMATIC ========== */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 1rem 3rem;
+            position: relative;
+            overflow: hidden;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(139, 0, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(45, 0, 51, 0.2) 0%, transparent 50%);
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0.9)),
+                url('images/2023/buk.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            z-index: -1;
+            opacity: 0.3;
+            filter: grayscale(100%) brightness(0.5);
+        }
+
+        .hero-content {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-family: 'Creepster', cursive;
+            font-size: clamp(2.5rem, 10vw, 5rem);
+            color: var(--blood-red-light);
+            margin-bottom: 1.5rem;
+            text-shadow: 
+                0 0 30px var(--blood-red),
+                0 0 60px var(--blood-red),
+                0 0 100px var(--blood-red);
+            letter-spacing: 3px;
+            animation: 
+                titleGlitch 5s infinite alternate,
+                breathing 3s infinite ease-in-out;
+            opacity: 0;
+            transform: translateY(50px);
+            animation-fill-mode: forwards;
+            animation-delay: 4s;
+        }
+
+        .hero-subtitle {
+            font-family: 'Special Elite', cursive;
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            color: var(--ash-gray);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            letter-spacing: 1px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s var(--transition-blood) 4.5s forwards;
+            position: relative;
+            padding: 1rem;
+            border-left: 2px solid var(--blood-red);
+            border-right: 2px solid var(--blood-red);
+            background: rgba(10, 10, 10, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .hero-subtitle::before,
+        .hero-subtitle::after {
+            content: '"';
+            color: var(--blood-red);
+            font-size: 2em;
+            position: absolute;
+            top: 0;
+        }
+
+        .hero-subtitle::before {
+            left: -10px;
+        }
+
+        .hero-subtitle::after {
+            right: -10px;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0;
+            animation: fadeIn 1s var(--transition-blood) 5s forwards;
+            z-index: 3;
+        }
+
+        .scroll-indicator span {
+            font-family: 'Special Elite', cursive;
+            font-size: 0.8rem;
+            color: var(--ash-gray);
+            letter-spacing: 2px;
+        }
+
+        .scroll-indicator i {
+            color: var(--blood-red);
+            animation: bounce 2s infinite var(--transition-scary);
+        }
+
+        /* ========== ETALASE SECTION - HORROR STYLE ========== */
+        .etalase-section {
+            padding: 4rem 1rem;
+            position: relative;
+            background: linear-gradient(to bottom, rgba(139, 0, 0, 0.05), transparent);
+            border-top: 1px solid rgba(139, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(139, 0, 0, 0.2);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 6vw, 3rem);
+            color: var(--bone-white);
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+            text-shadow: 0 0 10px var(--blood-red);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--blood-red), transparent);
+            animation: bloodFlow 3s infinite;
+        }
+
+        .section-subtitle {
+            font-family: 'Special Elite', cursive;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            color: var(--ash-gray);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+            position: relative;
+            padding: 1rem;
+            background: rgba(10, 10, 10, 0.5);
+            border-radius: 5px;
+            border: 1px solid rgba(139, 0, 0, 0.2);
+        }
+
+        /* Carousel Horror Style */
+        .carousel-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            background: rgba(10, 10, 10, 0.7);
+            padding: 1.5rem;
+            border: 1px solid var(--blood-red);
+            box-shadow: 
+                0 0 30px rgba(139, 0, 0, 0.3),
+                inset 0 0 20px rgba(139, 0, 0, 0.1);
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s var(--transition-scary);
+            gap: 1rem;
+            padding: 10px 0;
+            touch-action: pan-y;
+        }
+
+        /* Etalase Card Horror Style */
+        .etalase-card {
+            flex: 0 0 280px;
+            background: rgba(20, 20, 20, 0.9);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.4s var(--transition-scary);
+            position: relative;
+            cursor: pointer;
+            border: 2px solid transparent;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        @media (max-width: 480px) {
+            .etalase-card {
+                flex: 0 0 250px;
+            }
+        }
+
+        .etalase-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            background: linear-gradient(45deg, transparent, var(--blood-red), transparent);
+            opacity: 0;
+            transition: opacity 0.3s var(--transition-blood);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .etalase-card:hover::before {
+            opacity: 0.3;
+        }
+
+        .etalase-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--blood-red);
+            box-shadow: 
+                0 10px 30px rgba(139, 0, 0, 0.3),
+                0 0 20px var(--blood-glow);
+        }
+
+        .etalase-card:hover .etalase-image {
+            transform: scale(1.05);
+            filter: brightness(1.2) contrast(1.1);
+        }
+
+        .etalase-image-container {
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+            border-bottom: 1px solid var(--blood-red);
+        }
+
+        @media (max-width: 480px) {
+            .etalase-image-container {
+                height: 180px;
+            }
+        }
+
+        .etalase-image-container::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px solid rgba(139, 0, 0, 0.3);
+            border-radius: 5px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .etalase-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s var(--transition-scary);
+            filter: sepia(0.3) contrast(1.1);
+        }
+
+        .etalase-info {
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .etalase-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            color: var(--bone-white);
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+            text-shadow: 0 0 5px var(--blood-red);
+        }
+
+        .etalase-name::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--blood-red);
+        }
+
+        .etalase-title {
+            font-family: 'Special Elite', cursive;
+            font-size: 0.8rem;
+            color: var(--blood-red-light);
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .etalase-hobby {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            color: var(--ash-gray);
+            font-size: 0.85rem;
+            padding: 0.5rem 0.8rem;
+            background: rgba(139, 0, 0, 0.1);
+            border-radius: 5px;
+            border-left: 3px solid var(--blood-red);
+        }
+
+        .etalase-hobby i {
+            color: var(--blood-red-light);
+            font-size: 1rem;
+        }
+
+        .etalase-bio {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--ash-gray);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            padding-left: 0.8rem;
+            border-left: 2px solid rgba(139, 0, 0, 0.5);
+        }
+
+        /* Instagram Button Horror Style */
+        .instagram-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(45deg, #000000, var(--blood-red));
+            color: var(--bone-white);
+            border: 1px solid var(--blood-red);
+            border-radius: 5px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s var(--transition-blood);
+            text-decoration: none;
+            box-shadow: 0 0 10px rgba(139, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .instagram-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s var(--transition-blood);
+        }
+
+        .instagram-btn:hover::before {
+            left: 100%;
+        }
+
+        .instagram-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(139, 0, 0, 0.5);
+            background: linear-gradient(45deg, var(--blood-red), #000000);
+        }
+
+        .instagram-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Carousel Navigation */
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(10, 10, 10, 0.8);
+            border: 2px solid var(--blood-red);
+            color: var(--blood-red-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s var(--transition-blood);
+            z-index: 10;
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .carousel-nav:hover {
+            background: var(--blood-red);
+            color: var(--bone-white);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 0 25px var(--blood-glow-light);
+        }
+
+        .carousel-nav.prev {
+            left: 10px;
+        }
+
+        .carousel-nav.next {
+            right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .carousel-nav {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+            
+            .carousel-nav.prev {
+                left: 5px;
+            }
+            
+            .carousel-nav.next {
+                right: 5px;
+            }
+        }
+
+        /* Carousel Indicators */
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(139, 0, 0, 0.3);
+            flex-wrap: wrap;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(139, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s var(--transition-blood);
+            position: relative;
+        }
+
+        .indicator::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            transition: border-color 0.3s var(--transition-blood);
+        }
+
+        .indicator.active {
+            background: var(--blood-red-light);
+            transform: scale(1.3);
+            box-shadow: 0 0 10px var(--blood-glow);
+        }
+
+        .indicator.active::after {
+            border-color: var(--blood-red);
+        }
+
+        /* ========== MEMORY GALLERY - HORROR MASONRY ========== */
+        .memory-section {
+            padding: 4rem 1rem;
+            position: relative;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 1s var(--transition-blood) forwards;
+            animation-delay: calc(var(--section-index) * 0.3s + 5s);
+        }
+
+        .memory-section:nth-child(1) { --section-index: 1; }
+        .memory-section:nth-child(2) { --section-index: 2; }
+        .memory-section:nth-child(3) { --section-index: 3; }
+        .memory-section:nth-child(4) { --section-index: 4; }
+
+        .memory-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--blood-red), transparent);
+        }
+
+        .masonry-grid {
+            columns: 1;
+            column-gap: 1rem;
+            padding: 0;
+        }
+
+        @media (min-width: 768px) {
+            .masonry-grid {
+                columns: 2;
+                column-gap: 1.5rem;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .masonry-grid {
+                columns: 3;
+            }
+        }
+
+        .memory-item {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.6s var(--transition-blood) forwards;
+            animation-fill-mode: forwards;
+            position: relative;
+            cursor: pointer;
+            border-radius: 5px;
+            overflow: hidden;
+            background: rgba(10, 10, 10, 0.5);
+            border: 1px solid rgba(139, 0, 0, 0.2);
+            transition: all 0.3s var(--transition-blood);
+        }
+
+        .memory-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--blood-red);
+            box-shadow: 0 10px 30px rgba(139, 0, 0, 0.3);
+        }
+
+        .memory-item:hover .memory-image {
+            transform: scale(1.05);
+            filter: brightness(1.1) contrast(1.1);
+        }
+
+        .memory-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: all 0.4s var(--transition-scary);
+            filter: sepia(0.2) contrast(1.05);
+        }
+
+        .memory-caption {
+            padding: 1rem;
+            font-family: 'Special Elite', cursive;
+            font-size: 0.85rem;
+            color: var(--ash-gray);
+            line-height: 1.5;
+            border-top: 1px solid rgba(139, 0, 0, 0.2);
+            background: rgba(10, 10, 10, 0.7);
+        }
+
+        /* Double Tap Heart Overlay Horror */
+        .heart-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            color: var(--blood-red-light);
+            font-size: 4rem;
+            pointer-events: none;
+            z-index: 3;
+            transition: transform 0.3s var(--transition-scary);
+            text-shadow: 0 0 20px var(--blood-red);
+            filter: drop-shadow(0 0 10px var(--blood-red));
+        }
+
+        @media (max-width: 768px) {
+            .heart-overlay {
+                font-size: 3rem;
+            }
+        }
+
+        .heart-overlay.active {
+            transform: translate(-50%, -50%) scale(1);
+            animation: heartPulse 0.6s var(--transition-scary) forwards;
+        }
+
+        /* ========== HORROR AUDIO PLAYER ========== */
+        .audio-player {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 999;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 0.8rem 1.2rem;
+            box-shadow: 
+                0 5px 20px rgba(0, 0, 0, 0.5),
+                0 0 15px rgba(139, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border: 1px solid var(--blood-red);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.5s var(--transition-scary);
+            touch-action: manipulation;
+        }
+
+        @media (max-width: 480px) {
+            .audio-player {
+                bottom: 0.5rem;
+                right: 0.5rem;
+                padding: 0.6rem 1rem;
+            }
+        }
+
+        .audio-player.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .player-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(139, 0, 0, 0.2);
+            border: 1px solid var(--blood-red);
+            color: var(--blood-red-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s var(--transition-blood);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (max-width: 480px) {
+            .player-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+            }
+        }
+
+        .player-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 0, 0, 0.3), transparent);
+            transition: left 0.6s var(--transition-blood);
+        }
+
+        .player-btn:hover::before {
+            left: 100%;
+        }
+
+        .player-btn:hover {
+            background: var(--blood-red);
+            color: var(--bone-white);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px var(--blood-glow);
+        }
+
+        .player-btn:active {
+            transform: scale(0.95);
+        }
+
+        .player-btn.play-active {
+            background: var(--blood-red);
+            color: var(--bone-white);
+            border-color: var(--blood-red-light);
+            animation: pulseBlood 2s infinite;
+        }
+
+        .player-btn.blink {
+            animation: blinkBlood 0.8s ease infinite alternate;
+            box-shadow: 0 0 0 2px var(--blood-red);
+        }
+
+        .visualizer {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 25px;
+            padding: 0 0.5rem;
+            border-left: 1px solid rgba(139, 0, 0, 0.3);
+        }
+
+        @media (max-width: 480px) {
+            .visualizer {
+                height: 20px;
+                gap: 1px;
+            }
+        }
+
+        .bar {
+            width: 2px;
+            background: var(--blood-red);
+            border-radius: 1px;
+            transition: height 0.2s ease;
+            animation: barPulse 0.6s infinite alternate;
+        }
+
+        .bar:nth-child(1) { height: 6px; animation-delay: 0s; }
+        .bar:nth-child(2) { height: 12px; animation-delay: 0.1s; }
+        .bar:nth-child(3) { height: 18px; animation-delay: 0.2s; }
+        .bar:nth-child(4) { height: 14px; animation-delay: 0.3s; }
+        .bar:nth-child(5) { height: 9px; animation-delay: 0.4s; }
+
+        /* ========== HORROR LIGHTBOX ========== */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.4s var(--transition-scary);
+        }
+
+        .lightbox::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(139, 0, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(45, 0, 51, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+            animation: lightboxFadeIn 0.4s var(--transition-scary);
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            transform: scale(0.9);
+            transition: transform 0.4s var(--transition-scary);
+            border: 2px solid var(--blood-red);
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 
+                0 0 50px rgba(139, 0, 0, 0.5),
+                0 0 100px rgba(139, 0, 0, 0.3);
+        }
+
+        .lightbox.active .lightbox-content {
+            transform: scale(1);
+        }
+
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            display: block;
+            filter: sepia(0.1) contrast(1.05);
+        }
+
+        .lightbox-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: var(--bone-white);
+            font-family: 'Special Elite', cursive;
+            font-size: 0.9rem;
+            padding: 1rem;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--blood-red);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -2rem;
+            right: 0;
+            background: rgba(139, 0, 0, 0.3);
+            border: 1px solid var(--blood-red);
+            color: var(--bone-white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s var(--transition-blood);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            z-index: 2001;
+        }
+
+        @media (max-width: 768px) {
+            .lightbox-close {
+                top: 10px;
+                right: 10px;
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+        }
+
+        .lightbox-close:hover {
+            background: var(--blood-red);
+            transform: rotate(90deg);
+            box-shadow: 0 0 20px var(--blood-glow);
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(139, 0, 0, 0.3);
+            border: 1px solid var(--blood-red);
+            color: var(--bone-white);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s var(--transition-blood);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .lightbox-nav {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+            
+            .lightbox-prev {
+                left: 10px;
+            }
+            
+            .lightbox-next {
+                right: 10px;
+            }
+        }
+
+        .lightbox-nav:hover {
+            background: var(--blood-red);
+            opacity: 1;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 0 25px var(--blood-glow);
+        }
+
+        .lightbox-prev {
+            left: -55px;
+        }
+
+        .lightbox-next {
+            right: -55px;
+        }
+
+        /* ========== HORROR FOOTER ========== */
+        .footer-section {
+            padding: 4rem 1rem;
+            text-align: center;
+            background: rgba(10, 10, 10, 0.9);
+            color: var(--bone-white);
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid var(--blood-red);
+        }
+
+        .footer-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(139, 0, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(45, 0, 51, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-title {
+            font-family: 'Creepster', cursive;
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            color: var(--blood-red-light);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 15px var(--blood-red);
+            letter-spacing: 2px;
+        }
+
+        .footer-text {
+            font-family: 'Special Elite', cursive;
+            color: var(--ash-gray);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .footer-signature {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: var(--blood-red-light);
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(139, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        /* ========== HORROR ANIMATIONS ========== */
+        @keyframes bloodDrip {
+            0% {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bloodStream {
+            0% {
+                height: 0;
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                height: 100vh;
+                opacity: 1;
+            }
+        }
+
+        @keyframes poolGrow {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes bloodShine {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        @keyframes titleGlitch {
+            0%, 100% {
+                transform: translate(0);
+            }
+            92% {
+                transform: translate(-2px, 1px);
+            }
+            94% {
+                transform: translate(2px, -1px);
+            }
+            96% {
+                transform: translate(-1px, 2px);
+            }
+            98% {
+                transform: translate(1px, -2px);
+            }
+        }
+
+        @keyframes glitchText {
+            0%, 100% {
+                transform: translate(0);
+                opacity: 1;
+            }
+            20% {
+                transform: translate(-1px, 1px);
+                opacity: 0.8;
+            }
+            40% {
+                transform: translate(1px, -1px);
+                opacity: 0.9;
+            }
+            60% {
+                transform: translate(-1px, -1px);
+                opacity: 0.7;
+            }
+            80% {
+                transform: translate(1px, 1px);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes breathing {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+
+        @keyframes bloodFlow {
+            0%, 100% {
+                opacity: 0.5;
+                width: 100px;
+            }
+            50% {
+                opacity: 1;
+                width: 150px;
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInBody {
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes heartPulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0;
+            }
+        }
+
+        @keyframes barPulse {
+            from { 
+                height: 5px;
+                opacity: 0.5;
+            }
+            to { 
+                height: 20px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulseBlood {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(139, 0, 0, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(139, 0, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(139, 0, 0, 0);
+            }
+        }
+
+        @keyframes blinkBlood {
+            from {
+                transform: scale(1);
+                box-shadow: 0 0 0 2px var(--blood-red);
+            }
+            to {
+                transform: scale(1.1);
+                box-shadow: 
+                    0 0 0 4px var(--blood-red),
+                    0 0 20px var(--blood-red);
+            }
+        }
+
+        @keyframes navSlideDown {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes lightboxFadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ========== RESPONSIVE DESIGN ========== */
+        @media (max-width: 768px) {
+            .nav-years {
+                gap: 0.3rem;
+            }
+            
+            .year-link {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+            }
+            
+            .hero-section {
+                padding: 5rem 1rem 2rem;
+            }
+            
+            .etalase-section {
+                padding: 3rem 1rem;
+            }
+            
+            .memory-section {
+                padding: 3rem 1rem;
+            }
+            
+            .carousel-container {
+                padding: 1rem;
+            }
+            
+            .etalase-info {
+                padding: 1rem;
+            }
+            
+            .footer-section {
+                padding: 3rem 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .loading-title {
+                font-size: clamp(1.8rem, 6vw, 2.5rem);
+            }
+            
+            .hero-title {
+                font-size: clamp(2rem, 8vw, 3rem);
+            }
+            
+            .section-title {
+                font-size: clamp(1.8rem, 5vw, 2.2rem);
+            }
+            
+            .etalase-card {
+                flex: 0 0 230px;
+            }
+            
+            .etalase-image-container {
+                height: 160px;
+            }
+            
+            .etalase-name {
+                font-size: 1.1rem;
+            }
+            
+            .masonry-grid {
+                columns: 1;
+            }
+        }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- THREE.JS 3D HORROR BACKGROUND -->
+    <div id="three-container"></div>
+    <div class="film-grain"></div>
+    <div class="scratch-overlay"></div>
+
+    <!-- BLOOD DRIPPING LOADING SCREEN -->
+    <div id="loading-screen">
+        <div class="blood-container" id="bloodContainer"></div>
+        <div class="loading-content">
+            <h1 class="loading-title">Entering the Nightmare...</h1>
+            <p class="loading-subtitle">Loading Darkness...</p>
+            <div class="loading-progress-container">
+                <div class="loading-progress" id="loadingProgress"></div>
+            </div>
+            <div class="loading-percentage" id="loadingPercentage">0%</div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main-content">
+        <!-- NAVIGATION -->
+        <nav class="nav-container" id="navbar">
+            <div class="container nav-content">
+                <a href="#home" class="logo">MEMORY<span>ALBUM</span></a>
+                <ul class="nav-years">
+                    <li><a href="#year-2022" class="year-link active">2022</a></li>
+                    <li><a href="#year-2023" class="year-link">2023</a></li>
+                    <li><a href="#year-2024" class="year-link">2024</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- HERO SECTION -->
+        <section id="home" class="hero-section">
+            <div class="container hero-content">
+                <h1 class="hero-title">IPS 3 Memory Archive</h1>
+                <p class="hero-subtitle">Sebuah perjalanan visual melalui kenangan, tawa, dan momen yang tak terlupakan. Setiap foto adalah cerita, setiap cerita adalah kenangan abadi.</p>
+                <div class="scroll-indicator">
+                    <span>Scroll to Explore</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- ETALASE SECTION -->
+        <section class="etalase-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Galeri Anggota IPS 3</h2>
+                    <p class="section-subtitle">Kenali lebih dekat teman-teman kelas, impian mereka, dan cerita di balik senyuman.</p>
+                </div>
+                
+                <div class="carousel-container">
+                    <button class="carousel-nav prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    
+                    <button class="carousel-nav next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    
+                    <div class="carousel-track" id="etalaseTrack">
+                        <!-- Anggota 1 -->
+                        <div class="etalase-card">
+                            <div class="etalase-image-container">
+                                <img src="images/2022/contoh.jpeg" alt="Ahmad Rizki" class="etalase-image">
+                            </div>
+                            <div class="etalase-info">
+                                <h3 class="etalase-name">payd</h3>
+                                <p class="etalase-title">Ketua Kelas IPS 3</p>
+                                
+                                <div class="etalase-hobby">
+                                    <i class="fas fa-book"></i>
+                                    <span>Tech Enthusiast</span>
+                                </div>
+                                
+                                <p class="etalase-bio">"Percaya bahwa setiap momen memiliki cerita. Senang mengabadikan keindahan dalam frame dan kata-kata."</p>
+                                
+                                <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
+                                    <i class="fab fa-instagram"></i>
+                                    <span>Follow on Instagram</span>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Anggota 2 -->
+                        <div class="etalase-card">
+                            <div class="etalase-image-container">
+                                <img src="images/2022/kacamata.jpeg" alt="Siti Aisyah" class="etalase-image">
+                            </div>
+                            <div class="etalase-info">
+                                <h3 class="etalase-name">Siti Aisyah</h3>
+                                <p class="etalase-title">Bendahara & Aktivis</p>
+                                
+                                <div class="etalase-hobby">
+                                    <i class="fas fa-paint-brush"></i>
+                                    <span>Seni & Lingkungan</span>
+                                </div>
+                                
+                                <p class="etalase-bio">"Seni adalah cara saya memahami dunia. Aktif dalam kegiatan lingkungan dan seni visual."</p>
+                                
+                                <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
+                                    <i class="fab fa-instagram"></i>
+                                    <span>Follow on Instagram</span>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Anggota 3 -->
+                        <div class="etalase-card">
+                            <div class="etalase-image-container">
+                                <img src="images/2022/kacamata.jpeg" alt="Budi Santoso" class="etalase-image">
+                            </div>
+                            <div class="etalase-info">
+                                <h3 class="etalase-name">Budi Santoso</h3>
+                                <p class="etalase-title">Atlet & Organisator</p>
+                                
+                                <div class="etalase-hobby">
+                                    <i class="fas fa-futbol"></i>
+                                    <span>Olahraga & Musik</span>
+                                </div>
+                                
+                                <p class="etalase-bio">"Energi positif datang dari gerak dan irama. Tim futsal sekolah dan pemain bass band."</p>
+                                
+                                <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
+                                    <i class="fab fa-instagram"></i>
+                                    <span>Follow on Instagram</span>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Anggota 4 -->
+                        <div class="etalase-card">
+                            <div class="etalase-image-container">
+                                <img src="images/2022/kacamata.jpeg" alt="Maya Putri" class="etalase-image">
+                            </div>
+                            <div class="etalase-info">
+                                <h3 class="etalase-name">Maya Putri</h3>
+                                <p class="etalase-title">Penulis & Debat</p>
+                                
+                                <div class="etalase-hobby">
+                                    <i class="fas fa-pen-fancy"></i>
+                                    <span>Menulis & Debat</span>
+                                </div>
+                                
+                                <p class="etalase-bio">"Kata-kata adalah senjata terbaik. Juara lomba debat se-provinsi dan penulis puisi."</p>
+                                
+                                <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
+                                    <i class="fab fa-instagram"></i>
+                                    <span>Follow on Instagram</span>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Anggota 5 -->
+                        <div class="etalase-card">
+                            <div class="etalase-image-container">
+                                <img src="images/2022/kacamata.jpeg" alt="Rizky Pratama" class="etalase-image">
+                            </div>
+                            <div class="etalase-info">
+                                <h3 class="etalase-name">Rizky Pratama</h3>
+                                <p class="etalase-title">Tech Enthusiast</p>
+                                
+                                <div class="etalase-hobby">
+                                    <i class="fas fa-laptop-code"></i>
+                                    <span>Teknologi & Robotika</span>
+                                </div>
+                                
+                                <p class="etalase-bio">"Masa depan ada di teknologi. Pernah membuat robot sederhana dan aktif di klub programming."</p>
+                                
+                                <a href="https://www.instagram.com/mlky.nano?igsh=MTd0b2x5aGk0bzJlNw==" target="_blank" class="instagram-btn">
+                                    <i class="fab fa-instagram"></i>
+                                    <span>Follow on Instagram</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="carousel-indicators" id="etalaseIndicators">
+                        <!-- Indicators will be generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2022 SECTION -->
+        <section id="year-2022" class="memory-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">The Beginning · 2022</h2>
+                    <p class="section-subtitle">Awal petualangan, pertemuan pertama, dan cerita yang baru dimulai. Kenangan sederhana yang menjadi fondasi persahabatan.</p>
+                </div>
+                
+                <div class="masonry-grid" id="gallery-2022">
+                    <!-- Photo 1 -->
+                    <div class="memory-item" data-id="2022-1">
+                        <img src="images/2022/diko.jpeg" alt="Hari pertama di kelas IPS 3" class="memory-image" loading="lazy">
+                        <div class="memory-caption">Hari pertama - antusiasme dan harapan baru</div>
+                        <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+                    </div>
+                    
+                    <!-- Photo 2 -->
+                    <div class="memory-item" data-id="2022-2">
+                        <img src="images/2023/buk.jpeg" alt="Buk Kartika Ulang Tahun" class="memory-image" loading="lazy">
+                        <div class="memory-caption">Perayaan sederhana, kebahagiaan yang besar</div>
+                        <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+                    </div>
+                    
+                    <!-- Photo 3 -->
+                    <div class="memory-item" data-id="2022-3">
+                        <img src="images/2023/WhatsApp Image 2025-12-23 at 10.11.48.jpeg" alt="Berenang bersama" class="memory-image" loading="lazy">
+                        <div class="memory-caption">Momen santai di luar kelas, tawa yang tak terlupakan</div>
+                        <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+                    </div>
+                    
+                    <!-- Photo 4 -->
+                    <div class="memory-item" data-id="2022-4">
+                        <img src="images/2023/WhatsApp Image 2025-12-23 at 10.15.24.jpeg" alt="Upacara pertama" class="memory-image" loading="lazy">
+                        <div class="memory-caption">Semangat baru di minggu pertama sekolah</div>
+                        <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2023 SECTION -->
+        <section id="year-2023" class="memory-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">The Journey · 2023</h2>
+                    <p class="section-subtitle">Tahun pertumbuhan, pengalaman baru, dan ikatan yang semakin kuat. Setiap momen membentuk karakter dan kenangan bersama.</p>
+                </div>
+                
+                <div class="masonry-grid" id="gallery-2023">
+                    <!-- Photo 1 -->
+                    <div class="memory-item" data-id="2023-1">
+                        <img src="images/2023/WhatsApp Image 2025-12-23 at 10.11.45.jpeg" alt="Study Tour" class="memory-image" loading="lazy">
+                        <div class="memory-caption">Petualangan belajar di luar ruang kelas</div>
+                        <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+                    </div>
+                    
+                    <!-- Photo 2 -->
+                    <div class="memory-item" data-id="2023-2">
+                        <img src="images/2023/kelas.jpeg" alt="UAS terakhir" class="memory-image" loading="lazy">
+                        <div class="memory-caption">Setelah UAS - perasaan lega dan pencapaian</div>
+                        <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+                    </div>
+                    
+                    <!-- Photo 3 -->
+                    <div class="memory-item" data-id="2023-3">
+                        <img src="images/2023/puasa.jpeg" alt="Bukber di rumah teman" class="memory-image" loading="lazy">
+                        <div class="memory-caption">Kebersamaan di bulan suci, silaturahmi yang hangat</div>
+                        <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+                    </div>
+                    
+                    <!-- Photo 4 -->
+                    <div class="memory-item" data-id="2023-4">
+                        <img src="images/2024/foto5.jpg" alt="Bukber terakhir" class="memory-image" loading="lazy">
+                        <div class="memory-caption">Makan bersama terakhir sebelum berpisah</div>
+                        <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2024 SECTION -->
+        <section id="year-2024" class="memory-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">The Finale · 2024</h2>
+                    <p class="section-subtitle">Bab penutup yang penuh makna, persiapan untuk melanjutkan perjalanan masing-masing. Kenangan manis sebagai bekal masa depan.</p>
+                </div>
+                
+                <div class="masonry-grid" id="gallery-2024">
+                    <!-- Photo 1 -->
+                    <div class="memory-item" data-id="2024-1">
+                        <img src="images/2024/alkena.jpeg" alt="Persiapan kelulusan" class="memory-image" loading="lazy">
+                        <div class="memory-caption">Detik-detik menuju kelulusan, harapan dan cita-cita</div>
+                        <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+                    </div>
+                    
+                    <!-- Photo 2 -->
+                    <div class="memory-item" data-id="2024-2">
+                        <img src="images/2024/pak kodri.jpeg" alt="Olahraga dengan Pak Kodri" class="memory-image" loading="lazy">
+                        <div class="memory-caption">Semangat dan kesehatan, pelajaran di luar buku</div>
+                        <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+                    </div>
+                    
+                    <!-- Photo 3 -->
+                    <div class="memory-item" data-id="2024-3">
+                        <img src="images/2024/pepis.jpeg" alt="Detik-detik akhir" class="memory-image" loading="lazy">
+                        <div class="memory-caption">Momen terakhir bersama sebagai satu kelas</div>
+                        <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+                    </div>
+                    
+                    <!-- Photo 4 -->
+                    <div class="memory-item" data-id="2024-4">
+                        <img src="images/2024/perpisahan.jpg" alt="Perpisahan" class="memory-image" loading="lazy">
+                        <div class="memory-caption">Sampai jumpa di lain kesempatan, teman</div>
+                        <div class="heart-overlay"><i class="fas fa-heart"></i></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <section class="footer-section">
+            <div class="container footer-content">
+                <h2 class="footer-title">Terima Kasih</h2>
+                <p class="footer-text">Untuk setiap tawa, setiap cerita, setiap momen yang telah kita bagi bersama. Kenangan ini akan tetap hidup dalam setiap frame, dalam setiap memori, dalam setiap hati.</p>
+                <p class="footer-signature">— IPS 3, Selamanya dalam Kenangan —</p>
+                <form action="index.html"><button align="center" type="submit">masuk</button></form>
+            </div>
+        </section>
+    </div>
+
+    <!-- HORROR AUDIO PLAYER -->
+    <div class="audio-player" id="audioPlayer">
+        <div class="player-controls">
+            <button class="player-btn" id="playBtn" title="Play/Pause Horror Ambience">
+                <i class="fas fa-play"></i>
+            </button>
+            <div class="visualizer" id="visualizer">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HORROR LIGHTBOX -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose">
+            <i class="fas fa-times"></i>
+        </button>
+        <button class="lightbox-nav lightbox-prev" id="lightboxPrev">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="lightbox-content">
+            <img class="lightbox-image" id="lightboxImage" src="" alt="">
+            <div class="lightbox-caption" id="lightboxCaption"></div>
+        </div>
+        <button class="lightbox-nav lightbox-next" id="lightboxNext">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <script>
+        // ================= THREE.JS HORROR BACKGROUND =================
+        class HorrorBackground {
+            constructor() {
+                this.scene = null;
+                this.camera = null;
+                this.renderer = null;
+                this.particles = null;
+                this.clock = new THREE.Clock();
+                
+                this.init();
+            }
+
+            init() {
+                this.createScene();
+                this.createCamera();
+                this.createRenderer();
+                this.createFog();
+                this.createParticles();
+                this.createBloodCells();
+                this.animate();
+                this.handleResize();
+            }
+
+            createScene() {
+                this.scene = new THREE.Scene();
+            }
+
+            createCamera() {
+                this.camera = new THREE.PerspectiveCamera(
+                    75,
+                    window.innerWidth / window.innerHeight,
+                    0.1,
+                    1000
+                );
+                this.camera.position.z = 50;
+            }
+
+            createRenderer() {
+                this.renderer = new THREE.WebGLRenderer({
+                    alpha: true,
+                    antialias: true
+                });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                document.getElementById('three-container').appendChild(this.renderer.domElement);
+                
+                // Set dark background
+                this.renderer.setClearColor(0x0a0a0a, 1);
+            }
+
+            createFog() {
+                // Add blood-like fog
+                this.scene.fog = new THREE.FogExp2(0x1a0000, 0.002);
+            }
+
+            createParticles() {
+                // Create dark mist particles
+                const particlesGeometry = new THREE.BufferGeometry();
+                const particlesCount = 3000;
+                
+                const posArray = new Float32Array(particlesCount * 3);
+                const colorArray = new Float32Array(particlesCount * 3);
+                
+                for(let i = 0; i < particlesCount * 3; i += 3) {
+                    // Position
+                    posArray[i] = (Math.random() - 0.5) * 150;
+                    posArray[i + 1] = (Math.random() - 0.5) * 150;
+                    posArray[i + 2] = (Math.random() - 0.5) * 150;
+                    
+                    // Color (dark red and black particles)
+                    const isBlood = Math.random() > 0.7;
+                    colorArray[i] = isBlood ? 0.3 + Math.random() * 0.2 : 0.1; // R
+                    colorArray[i + 1] = isBlood ? 0.1 : 0.1; // G
+                    colorArray[i + 2] = isBlood ? 0.1 : 0.1; // B
+                }
+                
+                particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+                particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+                
+                const particlesMaterial = new THREE.PointsMaterial({
+                    size: 0.2,
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 0.4,
+                    blending: THREE.AdditiveBlending
+                });
+                
+                this.particles = new THREE.Points(particlesGeometry, particlesMaterial);
+                this.scene.add(this.particles);
+            }
+
+            createBloodCells() {
+                // Create floating blood cell-like particles
+                const bloodGeometry = new THREE.BufferGeometry();
+                const bloodCount = 100;
+                
+                const bloodArray = new Float32Array(bloodCount * 3);
+                
+                for(let i = 0; i < bloodCount * 3; i += 3) {
+                    bloodArray[i] = (Math.random() - 0.5) * 100;
+                    bloodArray[i + 1] = (Math.random() - 0.5) * 100;
+                    bloodArray[i + 2] = (Math.random() - 0.5) * 100;
+                }
+                
+                bloodGeometry.setAttribute('position', new THREE.BufferAttribute(bloodArray, 3));
+                
+                const bloodMaterial = new THREE.PointsMaterial({
+                    size: 0.5,
+                    color: 0x8b0000,
+                    transparent: true,
+                    opacity: 0.3,
+                    blending: THREE.AdditiveBlending
+                });
+                
+                this.bloodCells = new THREE.Points(bloodGeometry, bloodMaterial);
+                this.scene.add(this.bloodCells);
+            }
+
+            animate() {
+                const elapsedTime = this.clock.getElapsedTime();
+                
+                // Animate particles
+                if(this.particles) {
+                    this.particles.rotation.x = elapsedTime * 0.02;
+                    this.particles.rotation.y = elapsedTime * 0.01;
+                    
+                    const positions = this.particles.geometry.attributes.position.array;
+                    for(let i = 0; i < positions.length; i += 3) {
+                        positions[i + 1] += Math.sin(elapsedTime + positions[i]) * 0.01;
+                    }
+                    this.particles.geometry.attributes.position.needsUpdate = true;
+                }
+                
+                // Animate blood cells
+                if(this.bloodCells) {
+                    this.bloodCells.rotation.y = elapsedTime * 0.005;
+                    
+                    const bloodPositions = this.bloodCells.geometry.attributes.position.array;
+                    for(let i = 0; i < bloodPositions.length; i += 3) {
+                        bloodPositions[i] += Math.sin(elapsedTime + i) * 0.02;
+                        bloodPositions[i + 1] += Math.cos(elapsedTime + i) * 0.02;
+                    }
+                    this.bloodCells.geometry.attributes.position.needsUpdate = true;
+                }
+                
+                this.renderer.render(this.scene, this.camera);
+                requestAnimationFrame(() => this.animate());
+            }
+
+            handleResize() {
+                window.addEventListener('resize', () => {
+                    this.camera.aspect = window.innerWidth / window.innerHeight;
+                    this.camera.updateProjectionMatrix();
+                    this.renderer.setSize(window.innerWidth, window.innerHeight);
+                });
+            }
+        }
+
+        // ================= BLOOD DRIPPING LOADING SYSTEM =================
+        class BloodLoadingSystem {
+            constructor() {
+                this.loadingScreen = document.getElementById('loading-screen');
+                this.bloodContainer = document.getElementById('bloodContainer');
+                this.loadingProgress = document.getElementById('loadingProgress');
+                this.loadingPercentage = document.getElementById('loadingPercentage');
+                this.mainContent = document.getElementById('main-content');
+                
+                this.bloodDrops = [];
+                this.bloodStreams = [];
+                this.bloodPools = [];
+                this.progress = 0;
+                
+                this.init();
+            }
+
+            init() {
+                this.createInitialBlood();
+                this.startLoading();
+                this.startBloodAnimation();
+            }
+
+            createInitialBlood() {
+                // Create initial blood drips
+                for(let i = 0; i < 5; i++) {
+                    this.createBloodDrop(i * 500);
+                }
+            }
+
+            createBloodDrop(delay = 0) {
+                const drop = document.createElement('div');
+                drop.className = 'blood-drop';
+                
+                const size = 5 + Math.random() * 10;
+                const left = Math.random() * 100;
+                const duration = 1 + Math.random() * 2;
+                
+                drop.style.width = `${size}px`;
+                drop.style.height = `${size * 1.2}px`;
+                drop.style.left = `${left}%`;
+                drop.style.animation = `bloodDrip ${duration}s linear ${delay}ms forwards`;
+                
+                this.bloodContainer.appendChild(drop);
+                this.bloodDrops.push(drop);
+                
+                // Create blood stream after drop
+                setTimeout(() => {
+                    this.createBloodStream(left, delay + duration * 1000);
+                }, duration * 500);
+                
+                // Create blood pool at bottom
+                setTimeout(() => {
+                    this.createBloodPool(left);
+                }, duration * 1000);
+            }
+
+            createBloodStream(left, delay) {
+                const stream = document.createElement('div');
+                stream.className = 'blood-stream';
+                
+                const duration = 0.5 + Math.random() * 1;
+                
+                stream.style.left = `${left}%`;
+                stream.style.animation = `bloodStream ${duration}s ease-in ${delay}ms forwards`;
+                
+                this.bloodContainer.appendChild(stream);
+                this.bloodStreams.push(stream);
+            }
+
+            createBloodPool(left) {
+                const pool = document.createElement('div');
+                pool.className = 'blood-pool';
+                
+                const size = 20 + Math.random() * 30;
+                
+                pool.style.width = `${size}px`;
+                pool.style.height = `${size}px`;
+                pool.style.left = `calc(${left}% - ${size/2}px)`;
+                pool.style.animationDelay = `${Math.random() * 1}s`;
+                
+                this.bloodContainer.appendChild(pool);
+                this.bloodPools.push(pool);
+            }
+
+            startBloodAnimation() {
+                // Continuously create blood drips
+                const bloodInterval = setInterval(() => {
+                    if(this.progress >= 100) {
+                        clearInterval(bloodInterval);
+                        return;
+                    }
+                    
+                    // Increase blood intensity as loading progresses
+                    const intensity = Math.floor(this.progress / 20) + 1;
+                    for(let i = 0; i < intensity; i++) {
+                        this.createBloodDrop(i * 200);
+                    }
+                }, 1000);
+            }
+
+            startLoading() {
+                const loadingInterval = setInterval(() => {
+                    this.progress += Math.random() * 15;
+                    if(this.progress > 100) this.progress = 100;
+                    
+                    this.loadingProgress.style.width = `${this.progress}%`;
+                    this.loadingPercentage.textContent = `${Math.floor(this.progress)}%`;
+                    
+                    // Add blood intensity based on progress
+                    if(this.progress > 50) {
+                        this.bloodContainer.style.filter = `brightness(${1 + (this.progress - 50) / 100})`;
+                    }
+                    
+                    // Add final blood wave at 100%
+                    if(this.progress >= 100) {
+                        clearInterval(loadingInterval);
+                        this.finalBloodWave();
+                    }
+                }, 200);
+            }
+
+            finalBloodWave() {
+                // Create massive blood wave
+                for(let i = 0; i < 20; i++) {
+                    setTimeout(() => {
+                        this.createBloodDrop();
+                        this.createBloodDrop();
+                        this.createBloodDrop();
+                    }, i * 100);
+                }
+                
+                // Fill screen with blood
+                setTimeout(() => {
+                    this.bloodContainer.style.background = 'var(--blood-red)';
+                    this.bloodContainer.style.opacity = '0.9';
+                    
+                    // Transition to main content
+                    setTimeout(() => {
+                        this.loadingScreen.style.opacity = '0';
+                        this.loadingScreen.style.visibility = 'hidden';
+                        
+                        this.mainContent.style.opacity = '1';
+                        
+                        // Initialize other systems
+                        this.initializeAfterLoading();
+                    }, 1000);
+                }, 2000);
+            }
+
+            initializeAfterLoading() {
+                // Initialize Three.js background
+                const horrorBackground = new HorrorBackground();
+                
+                // Initialize carousel
+                const horrorCarousel = new HorrorCarousel();
+                
+                // Initialize gallery
+                const horrorGallery = new HorrorGallery();
+                
+                // Initialize audio system
+                const horrorAudio = new HorrorAudio();
+                
+                // Initialize navigation
+                const horrorNavigation = new HorrorNavigation();
+                
+                // Show audio player
+                setTimeout(() => {
+                    document.getElementById('audioPlayer').classList.add('show');
+                }, 1000);
+            }
+        }
+
+        // ================= HORROR CAROUSEL =================
+        class HorrorCarousel {
+            constructor() {
+                this.track = document.getElementById('etalaseTrack');
+                this.cards = document.querySelectorAll('.etalase-card');
+                this.prevBtn = document.querySelector('.carousel-nav.prev');
+                this.nextBtn = document.querySelector('.carousel-nav.next');
+                this.indicatorsContainer = document.getElementById('etalaseIndicators');
+                
+                this.currentIndex = 0;
+                this.cardWidth = 280;
+                this.gap = 16;
+                this.totalCards = this.cards.length;
+                this.isDragging = false;
+                this.startX = 0;
+                this.currentTranslate = 0;
+                this.prevTranslate = 0;
+                
+                this.init();
+            }
+
+            init() {
+                this.createIndicators();
+                this.setupEventListeners();
+                this.updateCarousel();
+                this.updateCardWidth();
+                window.addEventListener('resize', () => this.updateCardWidth());
+                
+                // Mobile touch support
+                this.setupTouchEvents();
+            }
+
+            updateCardWidth() {
+                if(this.cards[0]) {
+                    this.cardWidth = this.cards[0].offsetWidth;
+                    this.gap = parseInt(window.getComputedStyle(this.cards[0]).marginRight) || 16;
+                    this.updateCarousel();
+                }
+            }
+
+            createIndicators() {
+                if(!this.indicatorsContainer) return;
+                
+                this.indicatorsContainer.innerHTML = '';
+                
+                for(let i = 0; i < this.totalCards; i++) {
+                    const indicator = document.createElement('div');
+                    indicator.className = 'indicator';
+                    if(i === 0) indicator.classList.add('active');
+                    
+                    indicator.addEventListener('click', () => {
+                        this.goToSlide(i);
+                    });
+                    
+                    this.indicatorsContainer.appendChild(indicator);
+                }
+            }
+
+            setupEventListeners() {
+                if(this.prevBtn) this.prevBtn.addEventListener('click', () => this.prevSlide());
+                if(this.nextBtn) this.nextBtn.addEventListener('click', () => this.nextSlide());
+                
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if(e.key === 'ArrowLeft') this.prevSlide();
+                    if(e.key === 'ArrowRight') this.nextSlide();
+                });
+            }
+
+            setupTouchEvents() {
+                this.track.addEventListener('touchstart', (e) => this.touchStart(e));
+                this.track.addEventListener('touchmove', (e) => this.touchMove(e));
+                this.track.addEventListener('touchend', () => this.touchEnd());
+                
+                // Mouse drag support for desktop
+                this.track.addEventListener('mousedown', (e) => this.mouseStart(e));
+                this.track.addEventListener('mousemove', (e) => this.mouseMove(e));
+                this.track.addEventListener('mouseup', () => this.mouseEnd());
+                this.track.addEventListener('mouseleave', () => this.mouseEnd());
+            }
+
+            touchStart(e) {
+                this.isDragging = true;
+                this.startX = e.touches[0].clientX;
+                this.track.style.transition = 'none';
+            }
+
+            touchMove(e) {
+                if(!this.isDragging) return;
+                e.preventDefault();
+                
+                const currentX = e.touches[0].clientX;
+                this.currentTranslate = this.prevTranslate + currentX - this.startX;
+                this.track.style.transform = `translateX(${this.currentTranslate}px)`;
+            }
+
+            touchEnd() {
+                if(!this.isDragging) return;
+                this.isDragging = false;
+                
+                const movedBy = this.currentTranslate - this.prevTranslate;
+                
+                if(Math.abs(movedBy) > 50) {
+                    if(movedBy > 0) {
+                        this.prevSlide();
+                    } else {
+                        this.nextSlide();
+                    }
+                } else {
+                    this.goToSlide(this.currentIndex);
+                }
+                
+                this.track.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            }
+
+            mouseStart(e) {
+                this.isDragging = true;
+                this.startX = e.clientX;
+                this.track.style.transition = 'none';
+            }
+
+            mouseMove(e) {
+                if(!this.isDragging) return;
+                
+                const currentX = e.clientX;
+                this.currentTranslate = this.prevTranslate + currentX - this.startX;
+                this.track.style.transform = `translateX(${this.currentTranslate}px)`;
+            }
+
+            mouseEnd() {
+                if(!this.isDragging) return;
+                this.isDragging = false;
+                
+                const movedBy = this.currentTranslate - this.prevTranslate;
+                
+                if(Math.abs(movedBy) > 50) {
+                    if(movedBy > 0) {
+                        this.prevSlide();
+                    } else {
+                        this.nextSlide();
+                    }
+                } else {
+                    this.goToSlide(this.currentIndex);
+                }
+                
+                this.track.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            }
+
+            prevSlide() {
+                this.currentIndex = (this.currentIndex - 1 + this.totalCards) % this.totalCards;
+                this.updateCarousel();
+            }
+
+            nextSlide() {
+                this.currentIndex = (this.currentIndex + 1) % this.totalCards;
+                this.updateCarousel();
+            }
+
+            goToSlide(index) {
+                this.currentIndex = index;
+                this.updateCarousel();
+            }
+
+            updateCarousel() {
+                const translateX = -this.currentIndex * (this.cardWidth + this.gap);
+                this.track.style.transform = `translateX(${translateX}px)`;
+                
+                this.prevTranslate = translateX;
+                this.currentTranslate = translateX;
+                
+                // Update indicators
+                const indicators = document.querySelectorAll('.indicator');
+                indicators.forEach((indicator, index) => {
+                    indicator.classList.toggle('active', index === this.currentIndex);
+                });
+                
+                // Add blood effect to current card
+                this.cards.forEach((card, index) => {
+                    card.classList.remove('blood-active');
+                    if(index === this.currentIndex) {
+                        card.classList.add('blood-active');
+                        
+                        // Add subtle blood pulse effect
+                        setTimeout(() => {
+                            card.style.boxShadow = '0 0 30px rgba(139, 0, 0, 0.5)';
+                            setTimeout(() => {
+                                if(index === this.currentIndex) {
+                                    card.style.boxShadow = '0 10px 30px rgba(139, 0, 0, 0.3), 0 0 20px var(--blood-glow)';
+                                }
+                            }, 300);
+                        }, 100);
+                    }
+                });
+            }
+        }
+
+        // ================= HORROR GALLERY =================
+        class HorrorGallery {
+            constructor() {
+                this.galleryItems = [];
+                this.observer = null;
+                this.galleryData = {
+                    '2022': [
+                        {
+                            id: '2022-1',
+                            src: 'images/2022/diko.jpeg',
+                            caption: 'Hari pertama masuk kelas IPS 3 - Semangat baru, teman baru, cerita baru dimulai.',
+                            alt: 'Hari Pertama Sekolah'
+                        },
+                        {
+                            id: '2022-2',
+                            src: 'images/2023/buk.jpeg',
+                            caption: 'Ulang tahun Bu Kartika - Momen kebersamaan dengan guru tercinta.',
+                            alt: 'Buk Kartika Ultah'
+                        },
+                        {
+                            id: '2022-3',
+                            src: 'images/2023/WhatsApp Image 2025-12-23 at 10.11.48.jpeg',
+                            caption: 'Berenang bersama - yang penuh tawa dan canda + bonceng crush.',
+                            alt: 'Berenang'
+                        },
+                        {
+                            id: '2022-4',
+                            src: 'images/2023/WhatsApp Image 2025-12-23 at 10.15.24.jpeg',
+                            caption: 'Upacara pertama - Menyambut minggu baru dengan semangat.',
+                            alt: 'Upacara Pertama'
+                        }
+                    ],
+                    '2023': [
+                        {
+                            id: '2023-1',
+                            src: 'images/2023/WhatsApp Image 2025-12-23 at 10.11.45.jpeg',
+                            caption: 'Kegiatan belajar di luar kelas - Pengalaman yang memperkaya wawasan.',
+                            alt: 'Study Tour'
+                        },
+                        {
+                            id: '2023-2',
+                            src: 'images/2023/kelas.jpeg',
+                            caption: 'Setelah UAS terakhir - Perasaan lega dan pencapaian yang membanggakan.',
+                            alt: 'Selesai UAS'
+                        },
+                        {
+                            id: '2023-3',
+                            src: 'images/2023/puasa.jpeg',
+                            caption: 'Bukber di rumah teman - Silaturahmi dan kebersamaan di bulan Ramadan.',
+                            alt: 'Bukber Dirumah Pais'
+                        },
+                        {
+                            id: '2023-4',
+                            src: 'images/2024/foto5.jpg',
+                            caption: 'Bukber terakhir bersama - Kenangan manis sebelum berpisah.',
+                            alt: 'Bukber terakhir Bareng'
+                        }
+                    ],
+                    '2024': [
+                        {
+                            id: '2024-1',
+                            src: 'images/2024/alkena.jpeg',
+                            caption: 'Persiapan kelulusan - Harapan dan cita-cita untuk masa depan.',
+                            alt: 'Persiapan Kelulusan'
+                        },
+                        {
+                            id: '2024-2',
+                            src: 'images/2024/pak kodri.jpeg',
+                            caption: 'Olahraga bersama Pak Kodri - Semangat dan kesehatan yang diajarkan.',
+                            alt: 'Olahraga With Pak Kodri'
+                        },
+                        {
+                            id: '2024-3',
+                            src: 'images/2024/pepis.jpeg',
+                            caption: 'Detik-detik terakhir bersama - Momen yang tak akan terlupakan.',
+                            alt: 'Detik-Detik Akhir'
+                        },
+                        {
+                            id: '2024-4',
+                            src: 'images/2024/perpisahan.jpg',
+                            caption: 'Perpisahan - Sampai jumpa di lain kesempatan, teman-teman.',
+                            alt: 'Momen Perpisahan'
+                        }
+                    ]
+                };
+                
+                this.init();
+            }
+
+            init() {
+                this.galleryItems = Array.from(document.querySelectorAll('.memory-item'));
+                this.setupIntersectionObserver();
+                this.setupDoubleTap();
+                this.setupLightbox();
+                this.optimizeImages();
+            }
+
+            setupIntersectionObserver() {
+                const options = {
+                    root: null,
+                    rootMargin: '0px 0px -100px 0px',
+                    threshold: 0.1
+                };
+
+                this.observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry, index) => {
+                        if(entry.isIntersecting) {
+                            setTimeout(() => {
+                                entry.target.style.animation = `fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards`;
+                                entry.target.style.opacity = '1';
+                                entry.target.style.transform = 'translateY(0)';
+                            }, index * 150);
+                            this.observer.unobserve(entry.target);
+                        }
+                    });
+                }, options);
+
+                this.galleryItems.forEach(item => {
+                    this.observer.observe(item);
+                });
+            }
+
+            setupDoubleTap() {
+                this.galleryItems.forEach(item => {
+                    let lastTap = 0;
+                    
+                    item.addEventListener('click', (e) => {
+                        const currentTime = new Date().getTime();
+                        const tapLength = currentTime - lastTap;
+                        
+                        if(tapLength < 300 && tapLength > 0) {
+                            this.showHeartAnimation(item, e);
+                            this.vibrate();
+                            lastTap = 0;
+                        } else {
+                            lastTap = currentTime;
+                        }
+                    });
+                });
+            }
+
+            showHeartAnimation(item, event) {
+                const heart = item.querySelector('.heart-overlay');
+                if(!heart) return;
+                
+                const rect = item.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                
+                heart.style.left = `${x}px`;
+                heart.style.top = `${y}px`;
+                
+                heart.classList.add('active');
+                
+                setTimeout(() => {
+                    heart.classList.remove('active');
+                }, 600);
+            }
+
+            setupLightbox() {
+                const lightbox = document.getElementById('lightbox');
+                const lightboxImage = document.getElementById('lightboxImage');
+                const lightboxCaption = document.getElementById('lightboxCaption');
+                const lightboxClose = document.getElementById('lightboxClose');
+                const lightboxPrev = document.getElementById('lightboxPrev');
+                const lightboxNext = document.getElementById('lightboxNext');
+                
+                this.galleryItems.forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        if(e.detail === 2) return;
+                        const itemId = item.dataset.id;
+                        this.openLightbox(itemId);
+                    });
+                });
+                
+                // Lightbox controls
+                lightboxClose.addEventListener('click', () => this.closeLightbox());
+                lightboxPrev.addEventListener('click', () => this.prevImage());
+                lightboxNext.addEventListener('click', () => this.nextImage());
+                
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if(!lightbox.classList.contains('active')) return;
+                    
+                    switch(e.key) {
+                        case 'Escape':
+                            this.closeLightbox();
+                            break;
+                        case 'ArrowLeft':
+                            this.prevImage();
+                            break;
+                        case 'ArrowRight':
+                            this.nextImage();
+                            break;
+                    }
+                });
+                
+                // Close on background click
+                lightbox.addEventListener('click', (e) => {
+                    if(e.target === lightbox) {
+                        this.closeLightbox();
+                    }
+                });
+                
+                // Swipe gestures for mobile
+                let startX = 0;
+                lightbox.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                });
+                
+                lightbox.addEventListener('touchend', (e) => {
+                    const endX = e.changedTouches[0].clientX;
+                    const diff = startX - endX;
+                    
+                    if(Math.abs(diff) > 50) {
+                        if(diff > 0) {
+                            this.nextImage();
+                        } else {
+                            this.prevImage();
+                        }
+                    }
+                });
+            }
+
+            openLightbox(itemId) {
+                const lightbox = document.getElementById('lightbox');
+                const lightboxImage = document.getElementById('lightboxImage');
+                const lightboxCaption = document.getElementById('lightboxCaption');
+                
+                for(const year in this.galleryData) {
+                    const image = this.galleryData[year].find(img => img.id === itemId);
+                    if(image) {
+                        lightboxImage.src = image.src;
+                        lightboxImage.alt = image.alt;
+                        lightboxCaption.textContent = image.caption;
+                        
+                        this.currentImage = image;
+                        this.currentYear = year;
+                        this.currentIndex = this.galleryData[year].findIndex(img => img.id === itemId);
+                        break;
+                    }
+                }
+                
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            closeLightbox() {
+                const lightbox = document.getElementById('lightbox');
+                lightbox.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+
+            nextImage() {
+                if(!this.currentYear || this.currentIndex === undefined) return;
+                const yearImages = this.galleryData[this.currentYear];
+                this.currentIndex = (this.currentIndex + 1) % yearImages.length;
+                this.updateLightboxContent(yearImages[this.currentIndex]);
+            }
+
+            prevImage() {
+                if(!this.currentYear || this.currentIndex === undefined) return;
+                const yearImages = this.galleryData[this.currentYear];
+                this.currentIndex = (this.currentIndex - 1 + yearImages.length) % yearImages.length;
+                this.updateLightboxContent(yearImages[this.currentIndex]);
+            }
+
+            updateLightboxContent(image) {
+                const lightboxImage = document.getElementById('lightboxImage');
+                const lightboxCaption = document.getElementById('lightboxCaption');
+                
+                lightboxImage.style.opacity = '0';
+                lightboxCaption.style.opacity = '0';
+                
+                setTimeout(() => {
+                    lightboxImage.src = image.src;
+                    lightboxImage.alt = image.alt;
+                    lightboxCaption.textContent = image.caption;
+                    
+                    setTimeout(() => {
+                        lightboxImage.style.opacity = '1';
+                        lightboxCaption.style.opacity = '1';
+                    }, 50);
+                }, 200);
+            }
+
+            optimizeImages() {
+                const images = document.querySelectorAll('.memory-image, .etalase-image');
+                images.forEach(img => {
+                    img.loading = 'lazy';
+                    img.decoding = 'async';
+                });
+            }
+
+            vibrate() {
+                if(navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            }
+        }
+
+        // ================= HORROR AUDIO SYSTEM =================
+        class HorrorAudio {
+            constructor() {
+                this.player = document.getElementById('audioPlayer');
+                this.playBtn = document.getElementById('playBtn');
+                this.visualizer = document.getElementById('visualizer');
+                this.bars = this.visualizer.querySelectorAll('.bar');
+                
+                this.audioContext = null;
+                this.analyser = null;
+                this.source = null;
+                this.isPlaying = false;
+                this.animationFrame = null;
+                
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.setupAudioContext();
+            }
+
+            setupEventListeners() {
+                this.playBtn.addEventListener('click', () => this.togglePlay());
+            }
+
+            setupAudioContext() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.analyser = this.audioContext.createAnalyser();
+                    this.analyser.fftSize = 256;
+                    
+                    // Create horror ambient sound
+                    this.createHorrorAmbience();
+                } catch(e) {
+                    console.log('Web Audio API not supported:', e);
+                }
+            }
+
+            createHorrorAmbience() {
+                // Create low frequency oscillator for heartbeat
+                const heartbeatOsc = this.audioContext.createOscillator();
+                heartbeatOsc.type = 'sine';
+                heartbeatOsc.frequency.setValueAtTime(40, this.audioContext.currentTime);
+                
+                const heartbeatGain = this.audioContext.createGain();
+                heartbeatGain.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+                
+                // Create heartbeat rhythm
+                const heartbeatInterval = setInterval(() => {
+                    heartbeatGain.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                    setTimeout(() => {
+                        heartbeatGain.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+                    }, 100);
+                }, 2000);
+                
+                // Create wind-like noise
+                const noiseBuffer = this.audioContext.createBuffer(1, this.audioContext.sampleRate * 2, this.audioContext.sampleRate);
+                const noiseOutput = noiseBuffer.getChannelData(0);
+                
+                for(let i = 0; i < noiseBuffer.length; i++) {
+                    noiseOutput[i] = Math.random() * 2 - 1;
+                }
+                
+                const noiseSource = this.audioContext.createBufferSource();
+                noiseSource.buffer = noiseBuffer;
+                noiseSource.loop = true;
+                
+                const noiseFilter = this.audioContext.createBiquadFilter();
+                noiseFilter.type = 'lowpass';
+                noiseFilter.frequency.setValueAtTime(200, this.audioContext.currentTime);
+                
+                const noiseGain = this.audioContext.createGain();
+                noiseGain.gain.setValueAtTime(0.05, this.audioContext.currentTime);
+                
+                // Connect nodes
+                heartbeatOsc.connect(heartbeatGain);
+                heartbeatGain.connect(this.analyser);
+                
+                noiseSource.connect(noiseFilter);
+                noiseFilter.connect(noiseGain);
+                noiseGain.connect(this.analyser);
+                
+                this.analyser.connect(this.audioContext.destination);
+                
+                // Store references
+                this.heartbeatOsc = heartbeatOsc;
+                this.heartbeatGain = heartbeatGain;
+                this.noiseSource = noiseSource;
+                this.heartbeatInterval = heartbeatInterval;
+            }
+
+            togglePlay() {
+                if(this.isPlaying) {
+                    this.pause();
+                } else {
+                    this.play();
+                }
+            }
+
+            play() {
+                if(this.audioContext.state === 'suspended') {
+                    this.audioContext.resume();
+                }
+                
+                this.heartbeatOsc.start();
+                this.noiseSource.start();
+                
+                this.isPlaying = true;
+                this.updateButton();
+                this.startVisualizer();
+            }
+
+            pause() {
+                if(this.heartbeatOsc) {
+                    this.heartbeatOsc.stop();
+                }
+                if(this.noiseSource) {
+                    this.noiseSource.stop();
+                }
+                
+                clearInterval(this.heartbeatInterval);
+                
+                this.isPlaying = false;
+                this.updateButton();
+                this.stopVisualizer();
+                
+                // Recreate audio for next play
+                setTimeout(() => {
+                    this.setupAudioContext();
+                }, 100);
+            }
+
+            updateButton() {
+                if(this.isPlaying) {
+                    this.playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    this.playBtn.classList.add('play-active');
+                    this.playBtn.title = 'Pause Horror Ambience';
+                } else {
+                    this.playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    this.playBtn.classList.remove('play-active');
+                    this.playBtn.title = 'Play Horror Ambience';
+                }
+            }
+
+            startVisualizer() {
+                const bufferLength = this.analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+                
+                const updateBars = () => {
+                    this.analyser.getByteFrequencyData(dataArray);
+                    
+                    this.bars.forEach((bar, index) => {
+                        const height = (dataArray[index * 5] || 0) / 2;
+                        bar.style.height = `${height}px`;
+                    });
+                    
+                    this.animationFrame = requestAnimationFrame(updateBars);
+                };
+                
+                updateBars();
+            }
+
+            stopVisualizer() {
+                if(this.animationFrame) {
+                    cancelAnimationFrame(this.animationFrame);
+                }
+                this.bars.forEach(bar => {
+                    bar.style.height = '5px';
+                });
+            }
+        }
+
+        // ================= HORROR NAVIGATION =================
+        class HorrorNavigation {
+            constructor() {
+                this.navbar = document.getElementById('navbar');
+                this.yearLinks = document.querySelectorAll('.year-link');
+                this.sections = document.querySelectorAll('.memory-section, .hero-section');
+                
+                this.init();
+            }
+
+            init() {
+                this.setupScrollEffects();
+                this.setupNavLinks();
+                this.setupActiveSectionObserver();
+            }
+
+            setupScrollEffects() {
+                let ticking = false;
+                
+                window.addEventListener('scroll', () => {
+                    if(!ticking) {
+                        window.requestAnimationFrame(() => {
+                            this.handleScroll();
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                });
+            }
+
+            handleScroll() {
+                const scrollY = window.scrollY;
+                if(scrollY > 100) {
+                    this.navbar.style.background = 'rgba(10, 10, 10, 0.95)';
+                    this.navbar.style.backdropFilter = 'blur(10px)';
+                } else {
+                    this.navbar.style.background = 'rgba(10, 10, 10, 0.9)';
+                    this.navbar.style.backdropFilter = 'blur(10px)';
+                }
+            }
+
+            setupNavLinks() {
+                this.yearLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetId = link.getAttribute('href');
+                        this.scrollToSection(targetId);
+                        this.setActiveLink(link);
+                    });
+                });
+            }
+
+            scrollToSection(sectionId) {
+                const element = document.querySelector(sectionId);
+                if(!element) return;
+                
+                const navbarHeight = this.navbar.offsetHeight;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - navbarHeight - 20;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+
+            setActiveLink(activeLink) {
+                this.yearLinks.forEach(link => link.classList.remove('active'));
+                activeLink.classList.add('active');
+            }
+
+            setupActiveSectionObserver() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if(entry.isIntersecting) {
+                            const id = entry.target.id;
+                            this.updateActiveNav(id);
+                        }
+                    });
+                }, { 
+                    root: null,
+                    rootMargin: '-20% 0px -70% 0px',
+                    threshold: 0
+                });
+                
+                this.sections.forEach(section => {
+                    observer.observe(section);
+                });
+            }
+
+            updateActiveNav(sectionId) {
+                this.yearLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if(link.getAttribute('href') === `#${sectionId}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        // ================= INITIALIZE EVERYTHING =================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Start blood loading system
+            const bloodLoading = new BloodLoadingSystem();
+            
+            console.log('🩸 Horror Cinematic Memory Album - Loading...');
+            console.log('Features: Blood Dripping Loading, 3D Horror Background, Horror Audio, Cinematic Animations');
+        });
+
+        // Performance optimization
+        if('connection' in navigator) {
+            const connection = navigator.connection;
+            if(connection.saveData || connection.effectiveType.includes('2g')) {
+                // Reduce animations for slower connections
+                document.documentElement.style.setProperty('--transition-blood', 'all 0.2s ease');
+                document.documentElement.style.setProperty('--transition-scary', 'all 0.3s ease');
+            }
+        }
+
+        // Progressive enhancement for older browsers
+        if(!('IntersectionObserver' in window)) {
+            document.querySelectorAll('.memory-item').forEach(item => {
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            });
+        }
+    </script>
+</body>
+</html>
